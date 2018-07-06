@@ -1,0 +1,75 @@
+﻿@{
+    var siteVisited = Context.Request.Cookies[Consts.SiteVisited] != null;
+}
+
+<!--Cookie utility function-->
+<script>
+    (function () {
+        window.app = {
+            setCookie: function (name, value, days) {
+                var expires = "";
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie = name + "=" + (value || "") + expires + "; path=/";
+            }
+        };
+    }());
+</script>
+
+
+@if (!siteVisited)
+{
+    <!-- Async css loading -->
+    <noscript id="deferred-styles">
+        <link rel="stylesheet" href="/css/all.css" asp-append-version="true" />
+    </noscript>
+    <script>
+          (function () {
+              var loadDeferredStyles = function () {
+                  var addStylesNode = document.getElementById('deferred-styles');
+                  var replacement = document.createElement('div');
+                  replacement.innerHTML = addStylesNode.textContent;
+                  document.body.appendChild(replacement)
+                  addStylesNode.parentElement.removeChild(addStylesNode);
+                  app.setCookie('@Consts.SiteVisited', 1, 7);
+              };
+              var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                  window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+              if (raf) raf(function () { window.setTimeout(loadDeferredStyles, 0); });
+              else window.addEventListener('load', loadDeferredStyles);
+          }());
+    </script>
+}
+
+<!--Dynamic images -->
+<script>
+    (function () {
+        if (document.querySelectorAll) {
+            var className = 'js-dynamic-image',
+                images = document.querySelectorAll('.' + className);
+
+            function upgradeImageSrc(element, src) {
+                if (element.nodeName === 'IMG') { element.src = src; } else { element.style.backgroundImage = 'url(' + src + ')'; }
+            }
+
+            function loadImage(element) {
+                var src = element.getAttribute('data-dynamic-image-src');
+                if (src) {
+                    var img = new Image();
+                    img.onload = function () {
+                        upgradeImageSrc(element, src);
+                        if (element.classList) { element.classList.remove(className); }
+                        else { element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' '); }
+                    }; img.src = src;
+                }
+            }
+
+            for (var i = 0; i < images.length; i++) { loadImage(images[i]); }
+        }
+    }());
+</script>
+
+

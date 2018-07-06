@@ -1,0 +1,80 @@
+﻿// px to rem
+@function calculateRem($size) {
+    $remSize: $size / 16px;
+    @return #{$remSize}rem;
+}
+
+// rem font size
+@mixin font-size($size) {
+    font-size: calculateRem($size);
+}
+
+// Forces a element to maintain an aspect ratio
+// @include aspect-ratio(16, 9);
+@mixin aspect-ratio($width, $height) {
+    position: relative;
+
+    &:before {
+        display: block;
+        content: "";
+        width: 100%;
+        padding-top: ($height / $width) * 100%;
+    }
+}
+
+// clear floats
+@mixin clearfix {
+    display: block;
+    *zoom: 1;
+
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+}
+
+
+// hides element off screen
+@mixin hide {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+// remove default list styles
+@mixin noListStyle {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+// position element in centre of parent
+@mixin absoluteCentre {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// flexbox row
+@mixin row {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+}
+
+// z-index
+@mixin z-index($key) {
+    z-index: map-get($z-index, $key);
+}

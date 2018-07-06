@@ -1,0 +1,41 @@
+{
+  "queenwood package.json description": "NPM config file",
+  "name": "queenwood-designs",
+  "version": "0.0.1",
+  "description": "Sara's Furniture Shop",
+  "author": "Bryn Thomas <bryn500@outlook.com>",
+  "repository": "https://github.com/bryn500/queenwood",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.10",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^7.0.2",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^3.0.1"
+  },
+  "dependencies": {
+    "fontfaceobserver": "^2.0.13",
+    "vanilla-lazyload": "^8.9.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 11"
+  ],
+  "scripts": {
+    "prod": "webpack --mode production",
+    "dev": "webpack --mode development --watch"
+  },
+  "-vs-binding": {
+    "AfterBuild": [
+      "prod"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+﻿<section class="hero js-dynamic-image" style="background-image:url('@Urls.HomeHeaderImage');" data-dynamic-image-src="@Urls.GetHostedContentUrl(Context.Request, "/img/header-images/home-header.jpg")">
+    <h1 class="hero__tagline">
+        Handcrafted Furniture made from reclaimed and recycled materials
+    </h1>
+</section>
+
+<div class="hero-spacer"></div>
+
+<div class="aboveHero">
+    @{
+        var images = new List<ImageLink>();
+
+        images.Add(new ImageLink("https://picsum.photos/g/700/500/?random", 700, 500, "/", "Text Here"));
+        images.Add(new ImageLink("https://picsum.photos/500/500/?random", 500, 500, "/", "Text Here"));
+        images.Add(new ImageLink("https://picsum.photos/g/600/500/?random", 600, 500, "/", "Text Here"));
+        images.Add(new ImageLink("https://picsum.photos/700/500/?random", 700, 500, "/", "Text Here"));
+        images.Add(new ImageLink("https://picsum.photos/700/450/?random", 700, 450, "/", "Text Here"));
+        images.Add(new ImageLink("https://picsum.photos/g/500/450/?random", 500, 450, "/", "Text Here"));
+    }
+
+    <section class="homeOptions contentPadding">
+        <div class="row">
+            <div class="row__inner">
+                @foreach (var il in images)
+                {
+                    <div class="col col-xs-6 col-md-4">
+                        <a href="@il.LinkUrl" class="imageLink" style="padding-bottom:@il.AspectRatioPercentage%">
+                            <div class="imageLink__image">
+                                <img data-src="@il.Url" class="lazy" />
+                            </div>
+                            <div class="imageLink__details">
+                                <p>@il.LinkText</p>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>

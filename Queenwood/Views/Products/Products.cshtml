@@ -1,0 +1,61 @@
+﻿@model Queenwood.Models.Products
+
+<section class="header-spacer contentPadding">
+    <h1>Currently on Sale: <a href="@Model.ShopUrl">Etsy | @Model.ShopName</a></h1>
+
+    <p>Shop Image:   @Model.ShopImage</p>
+    <p>Shop Icon:    @Model.ShopIcon</p>
+
+    @if (Model.ShopListings.Any())
+    {
+        <div class="row">
+            <div class="row__inner">
+                @foreach (var li in Model.ShopListings)
+                {
+                    var image = li.Images.First();
+                    <div class="col col-xs-12 col-md-6 col-lg-3">
+                        <a href="@li.url" class="imageLink" style="padding-bottom:@image.AspectRatioPercentage%">
+                            <div class="imageLink__image">
+                                <img data-src="@image.url_fullxfull" class="lazy" />
+                            </div>
+                            <div class="imageLink__details">
+                                <p>@li.title</p>
+
+                                @if (li.price != null)
+                                {
+                                    <p>Â£@li.price</p>
+                                }
+                                else
+                                {
+                                    <p>Sold Out</p>
+                                }
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <p><em>No items currently in stock</em><br /> check out our past work below or <a asp-controller="Main" asp-action="Bespoke">get in contact</a> with any enquiries</p>
+
+    <h2>Portfolio of past work</h2>
+
+    <div class="row">
+        <div class="row__inner">
+            @foreach (var il in Model.PortfolioItems)
+            {
+                <div class="col col-xs-12 col-md-6 col-lg-3">
+                    <a href="@il.LinkUrl" class="imageLink" style="padding-bottom:@il.AspectRatioPercentage%">
+                        <div class="imageLink__image">
+                            <img data-src="@il.Url" class="lazy" />
+                        </div>
+                        <div class="imageLink__details">
+                            <p>@il.LinkText</p>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>

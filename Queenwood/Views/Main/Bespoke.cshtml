@@ -1,0 +1,116 @@
+﻿@model Contact
+
+@{
+    ViewBag.Title = "Bespoke Designs, Get in touch";
+}
+
+<section class="header-spacer contentPadding">
+    <h1>Please get in touch with any Bespoke enquiries</h1>
+
+    <p>
+        Please get in touch with us by telephone on <strong>01234 123456,</strong>
+        or use the form below if you need any further information,
+        wish to place an order or would like to discuss a bespoke design.
+        We will be very pleased to help you.
+
+    </p>
+
+    @if (Model.Success)
+    {
+        <div class="alert alert--success">
+            Enquiry Submitted
+        </div>
+    }
+    else
+    {
+        <form asp-controller="Main" asp-action="Bespoke" method="post">
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert--danger">
+                    @Html.ValidationSummary("Please resolve the following issues:")
+                </div>
+            }
+
+            <label class="formItem">
+                <span class="formItem__text">
+                    First Name<span class="required">*</span>
+                </span>
+
+                @Html.EditorFor(x => x.FirstName, new
+                {
+                    htmlAttributes = new
+                    {
+                        @class = "formItem__input",
+                        required = "required",
+                        maxlength = Contact.MaxFirstNameLength
+                    }
+                })
+            </label>
+
+            <label class="formItem">
+                <span class="formItem__text">
+                    Last Name<span class="required">*</span>
+                </span>
+
+                @Html.EditorFor(x => x.LastName, new
+                {
+                    htmlAttributes = new
+                    {
+                        @class = "formItem__input",
+                        required = "required",
+                        maxlength = Contact.MaxLastNameLength
+                    }
+                })
+            </label>
+
+            <label class="formItem">
+                <span class="formItem__text">
+                    Email<span class="required">*</span>
+                </span>
+
+                @Html.EditorFor(x => x.Email, new
+                {
+                    htmlAttributes = new
+                    {
+                        @class = "formItem__input",
+                        required = "required",
+                        maxlength = Contact.MaxEmailLength
+                    }
+                })
+            </label>
+
+            <label class="formItem">
+                <span class="formItem__text">
+                    Subject<span class="required">*</span>
+                </span>
+
+                @Html.EditorFor(x => x.Subject, new
+                {
+                    htmlAttributes = new
+                    {
+                        @class = "formItem__input",
+                        required = "required",
+                        maxlength = Contact.MaxSubjectLength
+                    }
+                })
+            </label>
+
+            <label class="formItem">
+                <span class="formItem__text">
+                    Message<span class="required">*</span>
+                </span>
+
+                @Html.TextAreaFor(x => x.Message, new
+                {
+                    @class = "formItem__input",
+                    required = "required",
+                    maxlength = Contact.MaxMessageLength,
+                    @rows = 8
+                })
+            </label>
+
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    }
+</section>

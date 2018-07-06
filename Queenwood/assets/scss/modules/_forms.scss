@@ -1,0 +1,75 @@
+﻿/*
+  Forms
+*/
+.formItem {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+
+    &__text {
+        flex: 0 1 7.5rem;
+        margin-bottom: 0.25rem;
+        line-height: 1.6;
+        @include font-size(16px);
+    }
+
+    &__input {
+        flex: 0 1 20rem;
+        max-width: 20rem;
+        padding: 0.25rem 0.5rem;
+        margin-right: 0.25rem;
+        line-height: 1.6;
+        @include font-size(16px);
+    }
+}
+
+.required {
+    color: red;
+}
+
+.input-validation-error {
+    border: 1px solid $dangerBorder;
+}
+
+.field-validation-valid {
+    color: $dangerColour;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    &--danger {
+        color: $dangerColour;
+        background-color: $dangerBackGround;
+        border: 1px solid $dangerBorder;
+    }
+
+    &--success {
+        color: $successColour;
+        background-color: $successBackGround;
+        border: 1px solid $successBorder;
+    }
+}
+
+
+/*
+  Button
+*/
+.btn {
+    color: #fff;
+    background-color: $buttonColour;
+    padding: 0.75rem 1.5rem;
+    @include font-size(14px);
+    letter-spacing: 1px;
+    border: 0;
+    border-radius: 2px;
+    outline: 0;
+    box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.2);
+    transition: all ease-in-out .2s;
+}
+
+.btn:hover, .btn:active, .btn:focus {
+    background-color: darken($buttonColour, 10%);
+}

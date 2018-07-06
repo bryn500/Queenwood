@@ -1,0 +1,13 @@
+﻿/*
+  Footer
+*/
+.footer {
+    background: $grey;
+    padding: 1.5rem 0 2rem;
+    text-align: center;
+}
+
+.copyright {
+    @include font-size(12px);
+    letter-spacing: 0.15rem;
+}

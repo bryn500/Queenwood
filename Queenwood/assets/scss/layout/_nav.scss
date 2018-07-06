@@ -1,0 +1,45 @@
+﻿.nav {
+    position: fixed;
+    width: 14rem;
+    height: 100vh;
+    left: 0;
+    top: $headerHeight;
+    @include z-index(nav);
+    transition: visibility $animation;
+    backface-visibility: hidden;
+
+    &__list {
+        @extend %noListStyle;
+        transition: transform $animation;
+        backface-visibility: hidden;
+        transform: translate3d(-100%, 0, 0);
+        background: #fff;
+        height: 100%;
+        text-align: left;
+        font-weight: bold;
+        padding: $padding;
+        line-height: 1.6;
+        border-right: .0625rem solid rgba(0,0,0,.1);
+    }
+
+    &__item {
+        margin-bottom: 1.25rem;
+
+        a {
+            display: block;
+            border-bottom: .0625rem solid transparent;
+
+            &:hover, &:focus {
+                border-bottom: .0625rem solid $fontColour;
+            }
+        }
+    }
+
+    &.visible {
+        visibility: visible;
+
+        .nav__list {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+}

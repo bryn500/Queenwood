@@ -1,0 +1,46 @@
+﻿// Font
+$fontFam: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$fontFamLoaded: 'Tajawal', "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// Colour palette
+$fontColour: #1a1a1a;
+
+$dangerColour: #721c24;
+$dangerBackGround: #f8d7da;
+$dangerBorder: #eea0a8;
+
+$successColour: #155724;
+$successBackGround: #d4edda;
+$successBorder: #b4dfbe;
+
+$grey: #F2F2F2;
+$buttonColour: #24cf5f;
+$linkColour: #006fc6;
+
+// Breakpoints
+$smallBreakpoint: 38rem;
+$bigBreakpoint: 48rem;
+
+// media queries
+// @include respond-to(small) { }
+@mixin respond-to($media) {
+    @if $media == small {
+        @media only screen and (min-width: $smallBreakpoint) {
+            @content;
+        }
+    }
+
+    @if $media == big {
+        @media only screen and (min-width: $bigBreakpoint) {
+            @content;
+        }
+    }
+}
+
+
+// z-index
+$z-index: ( header: 100, nav: 50, behindAll: -1 );
+
+// Sizes
+$headerHeight: 3.75rem;
+$padding: 2rem;

@@ -1,0 +1,162 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>0ad73d97-2acc-41cc-85a1-9b5224f51b90</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="assets\js\layout.js" />
+    <None Remove="assets\js\loadfonts.js" />
+    <None Remove="assets\js\modules\hero.js" />
+    <None Remove="assets\js\modules\nav.js" />
+    <None Remove="assets\js\utilities\polyfills.js" />
+    <None Remove="assets\Readme.txt" />
+    <None Remove="assets\scss\all.scss" />
+    <None Remove="assets\scss\critical.scss" />
+    <None Remove="assets\scss\layout\_common.scss" />
+    <None Remove="assets\scss\layout\_footer.scss" />
+    <None Remove="assets\scss\layout\_grid.scss" />
+    <None Remove="assets\scss\layout\_header.scss" />
+    <None Remove="assets\scss\layout\_nav.scss" />
+    <None Remove="assets\scss\layout\_normalise.scss" />
+    <None Remove="assets\scss\modules\_forms.scss" />
+    <None Remove="assets\scss\modules\_hero.scss" />
+    <None Remove="assets\scss\modules\_imageLink.scss" />
+    <None Remove="assets\scss\_mixins.scss" />
+    <None Remove="assets\scss\_placeholders.scss" />
+    <None Remove="assets\scss\_variables.scss" />
+    <None Remove="webpack.config.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\js\loadfonts.js">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\js\layout.js">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\js\modules\hero.js">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\js\modules\nav.js">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\js\utilities\polyfills.js">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\Readme.txt">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\scss\layout\_common.scss" />
+    <Content Include="assets\scss\layout\_footer.scss" />
+    <Content Include="assets\scss\layout\_grid.scss" />
+    <Content Include="assets\scss\layout\_header.scss" />
+    <Content Include="assets\scss\layout\_nav.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\scss\layout\_normalise.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\scss\modules\_forms.scss" />
+    <Content Include="assets\scss\modules\_hero.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\scss\modules\_imageLink.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\scss\_placeholders.scss" />
+    <Content Include="assets\scss\_variables.scss" />
+    <Content Include="assets\scss\all.scss" />
+    <Content Include="assets\scss\critical.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="assets\scss\_mixins.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="webpack.config.js">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="assets\scss\layout\_common.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\layout\_footer.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\layout\_grid.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\layout\_header.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\modules\_forms.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\_placeholders.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\_variables.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="assets\scss\all.scss">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="package.json">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Error\PageNotFound.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Error\ServerError.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Main\About.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Main\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Main\Bespoke.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Products\Products.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\Partial\_Favicons.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\Partial\_Footer.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\Partial\_Header.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\Partial\_InlineJS.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_Layout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>

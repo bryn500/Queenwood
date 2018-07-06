@@ -1,0 +1,69 @@
+﻿@{
+    var siteVisited = Context.Request.Cookies[Consts.SiteVisited] != null;
+    var bodyClass = siteVisited ? "fontloaded" : "";
+}
+<!DOCTYPE html>
+
+<html lang="en-gb">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--SEO -->
+    <title>@ViewBag.Title | Queenwood Design</title>
+    <meta name="description" content="">
+
+    <!--Fav Icons -->
+    <partial name="Partial/_Favicons" />
+
+    <!--Prefetch DNS for external files -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+    @if (siteVisited)
+    {
+        <!--Files should be cached as user has visited site before -->
+        <link rel="stylesheet" href="~/css/all.css" asp-append-version="true" />
+        <link href="https://fonts.googleapis.com/css?family=Tajawal:400,700" rel="stylesheet">
+    }
+    else
+    {
+        <!--Inline critical css -->
+        <style>@Html.Raw(Utilities.GetInlineFile("/css/critical.css"))</style>
+
+        <!--Preload fonts and all.css -->
+        <link rel="preload" href="~/css/all.css" asp-append-version="true" as="style" />
+        <link rel="preload" href="https://fonts.googleapis.com/css?family=Tajawal:400,700" as="style" />
+    }
+
+</head>
+<body class="@bodyClass">
+    <div class="content">
+        <!--Header -->
+        <partial name="Partial/_Header" />
+    
+        <!--Main -->
+        <main role="main" class="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!--Footer -->
+    <partial name="Partial/_Footer" />
+
+    <!--Inline JS -->
+    <partial name="Partial/_InlineJS" />
+
+    @if (!siteVisited)
+    {
+        <!--Font -->
+        <script src="~/js/loadfonts.min.js" asp-append-version="true" async></script>
+        <link href="https://fonts.googleapis.com/css?family=Tajawal:400,700" rel="stylesheet">
+    }
+
+    <!--Main JS -->
+    <script src="~/js/layout.min.js" asp-append-version="true" async></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
