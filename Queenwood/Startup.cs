@@ -61,7 +61,7 @@ namespace Queenwood
                 options.CacheProfiles.Add("Default",
                     new CacheProfile()
                     {
-                        VaryByHeader = "Accept-Encoding, X-QD-SV",
+                        VaryByHeader = "Accept-Encoding",
                         Location = ResponseCacheLocation.Any,
                         Duration = 60
                     });
