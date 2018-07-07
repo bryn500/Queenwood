@@ -7,7 +7,7 @@
     right: 0;
     top: $headerHeight;
     min-height: 25rem;
-    height: calc(100vh #{$headerHeight});
+    height: calc(100vh - #{$headerHeight});
     background-size: cover;
     background-position: bottom center;
     background-repeat: no-repeat;

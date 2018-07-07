@@ -7,6 +7,7 @@
     @include z-index(nav);
     transition: visibility $animation;
     backface-visibility: hidden;
+    visibility: hidden;
 
     &__list {
         @extend %noListStyle;
