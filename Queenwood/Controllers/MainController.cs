@@ -58,7 +58,7 @@ namespace Queenwood.Controllers
                 return View(model);
             }
 
-            var message = $"{model.FirstName} {model.LastName} {model.Email}{Environment.NewLine} {model.Message}";
+            var message = $"{model.Name} - {model.Email}{Environment.NewLine} {model.Message}";
 
             var result = await _emailService.SendEnquiry(model.Subject, message);
 

@@ -7,19 +7,14 @@ namespace Queenwood.Models
 {
     public class Contact
     {
-        public const int MaxFirstNameLength = 30;
-        public const int MaxLastNameLength = 30;
+        public const int MaxNameLength = 100;
         public const int MaxEmailLength = 255;
         public const int MaxSubjectLength = 60;
         public const int MaxMessageLength = 400;
 
         [Required]
-        [StringLength(MaxFirstNameLength)]
-        public string FirstName { get; set; }
-
-        [Required]
-        [StringLength(MaxLastNameLength)]
-        public string LastName { get; set; }
+        [StringLength(MaxNameLength)]
+        public string Name { get; set; }
 
         [Required]
         [StringLength(MaxEmailLength)]

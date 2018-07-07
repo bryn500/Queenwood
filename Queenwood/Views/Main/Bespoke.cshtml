@@ -34,32 +34,19 @@
 
             <label class="formItem">
                 <span class="formItem__text">
-                    First Name<span class="required">*</span>
+                    Name<span class="required">*</span>
                 </span>
 
-                @Html.EditorFor(x => x.FirstName, new
+                @Html.EditorFor(x => x.Name, new
                 {
                     htmlAttributes = new
                     {
                         @class = "formItem__input",
                         required = "required",
-                        maxlength = Contact.MaxFirstNameLength
-                    }
-                })
-            </label>
-
-            <label class="formItem">
-                <span class="formItem__text">
-                    Last Name<span class="required">*</span>
-                </span>
-
-                @Html.EditorFor(x => x.LastName, new
-                {
-                    htmlAttributes = new
-                    {
-                        @class = "formItem__input",
-                        required = "required",
-                        maxlength = Contact.MaxLastNameLength
+                        maxlength = Contact.MaxNameLength,
+                        autocomplete ="name",
+                        autocorrect = "off",
+                        autocapitalize="none"
                     }
                 })
             </label>
@@ -75,7 +62,10 @@
                     {
                         @class = "formItem__input",
                         required = "required",
-                        maxlength = Contact.MaxEmailLength
+                        maxlength = Contact.MaxEmailLength,
+                        autocomplete = "email",
+                        autocorrect = "off",
+                        autocapitalize="none"
                     }
                 })
             </label>
