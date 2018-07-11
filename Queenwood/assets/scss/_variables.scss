@@ -43,4 +43,12 @@ $z-index: ( header: 100, nav: 50, behindAll: -1 );
 
 // Sizes
 $headerHeight: 3.75rem;
+
 $padding: 2rem;
+$padding-1: ($padding/1.2);
+$padding-2: ($padding-1/1.2);
+$padding-3: ($padding-2/1.2);
+$padding-4: ($padding-3/1.2);
+$padding-5: ($padding-4/1.2);
+
+

@@ -3,11 +3,12 @@
 */
 .footer {
     background: $grey;
-    padding: 1.5rem 0 2rem;
+    padding: $padding-1 0 $padding;
     text-align: center;
 }
 
 .copyright {
     @include font-size(12px);
     letter-spacing: 0.15rem;
+    margin-bottom: 0;
 }

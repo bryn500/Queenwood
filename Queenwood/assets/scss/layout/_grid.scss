@@ -2,7 +2,7 @@
   Grid adapted from https://github.com/kristoferjoseph/flexboxgrid
 */
 
-$gridPadding: 1rem;
+$gridPadding: $padding-3;
 
 .row {
     padding: 0 $gridPadding;

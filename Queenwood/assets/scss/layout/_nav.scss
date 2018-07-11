@@ -17,7 +17,6 @@
         background: #fff;
         height: 100%;
         text-align: left;
-        font-weight: bold;
         padding: $padding;
         line-height: 1.6;
         border-right: .0625rem solid rgba(0,0,0,.1);
@@ -28,10 +27,23 @@
 
         a {
             display: block;
-            border-bottom: .0625rem solid transparent;
+            position: relative;
+
+            &:after {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 100%;
+                bottom: -3px;
+                height: 1px;
+                background: #1a1a1a;
+                transition: all 0.3s ease-in-out;
+            }
 
             &:hover, &:focus {
-                border-bottom: .0625rem solid $fontColour;
+                &:after {
+                    right: 0;
+                }
             }
         }
     }

@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\all.min.js" />
+    <Content Remove="wwwroot\css\critical.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="assets\js\layout.js" />
     <None Remove="assets\js\loadfonts.js" />
     <None Remove="assets\js\modules\hero.js" />
@@ -19,7 +24,6 @@
     <None Remove="assets\scss\layout\_grid.scss" />
     <None Remove="assets\scss\layout\_header.scss" />
     <None Remove="assets\scss\layout\_nav.scss" />
-    <None Remove="assets\scss\layout\_normalise.scss" />
     <None Remove="assets\scss\modules\_forms.scss" />
     <None Remove="assets\scss\modules\_hero.scss" />
     <None Remove="assets\scss\modules\_imageLink.scss" />
@@ -53,9 +57,6 @@
     <Content Include="assets\scss\layout\_grid.scss" />
     <Content Include="assets\scss\layout\_header.scss" />
     <Content Include="assets\scss\layout\_nav.scss">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Include="assets\scss\layout\_normalise.scss">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Include="assets\scss\modules\_forms.scss" />

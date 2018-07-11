@@ -10,12 +10,16 @@ $animation: ease-in-out 440ms;
     left: 0;
     right: 0;
     @include z-index(header);
-    padding: 0 $padding;
+    padding: 0 $padding-2;
     background-color: #fff;
     border-bottom: 0.0625rem solid rgba(0,0,0,0.1);
 
     a {
         color: $fontColour;
+    }
+
+    @include respond-to(small) {
+        padding: 0 $padding;
     }
 }
 
@@ -25,15 +29,15 @@ $animation: ease-in-out 440ms;
 
 .menuButton {
     display: block;
-    width: 1.5rem;
+    width: 1.618rem;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 
     &__bar {
         display: block;
-        height: 0.1875rem;
-        margin: 0.25rem 0;
+        height: 0.11rem;
+        margin: 0.414rem 0;
         background-color: #1a1a1a;
         transition: all $animation;
         backface-visibility: hidden;
@@ -41,7 +45,7 @@ $animation: ease-in-out 440ms;
 
     &.is-open {
         .menuButton__bar {
-            transform-origin: 77% 50%;
+            transform-origin: 81% 50%;
 
             &:nth-child(1) {
                 transform: rotate(-45deg) scaleX(1.442);

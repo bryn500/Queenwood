@@ -23,48 +23,58 @@ img {
 /*
   Typography
 */
+html {
+    font-size: 100%;
+}
+
 body {
     font-family: $fontFam;
-    font-size: 100%;
     color: $fontColour;
-    line-height: 1.6;
+    line-height: 1.45;
 }
 
 .fontloaded {
     font-family: $fontFamLoaded;
 }
 
+p {
+    margin: 0 0 1.2rem;
+}
+
 h1, h2, h3, h4, h5, h6 {
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
-    line-height: 1.3;
+    margin: 1.414rem 0 0.5rem;
+    line-height: 1.414;
 }
 
 h1 {
-    @include font-size(24px);
+    margin: 0 0 1.414rem;
+    font-size: 2.369rem;
+    font-weight: 400;
 }
 
 h2 {
-    @include font-size(20px);
+    font-size: 1.777rem;
+    font-weight: 400;
 }
 
 h3 {
-    @include font-size(18px);
+    font-size: 1.414rem;
 }
+
 h4 {
-    @include font-size(16px);
+    font-size: 1.333rem;
 }
 
 h5 {
-    @include font-size(14px);
+    font-size: 1rem;
 }
 
 h6 {
-    @include font-size(12px);
+    font-size: 0.75rem;
 }
 
-p {
-    margin: 0 0 1rem;
+small, .font_small {
+    font-size: 0.75rem;
 }
 
 a {
@@ -73,10 +83,22 @@ a {
 }
 
 .text-image {
-    float: left;
-    max-width: 100%;
-    padding: 0.45rem 1rem 0 0;
+    margin: .414rem auto $padding-1;
+    display: block;
+
+    @include respond-to(small) {
+        float: left;
+        max-width: 100%;
+        margin: .414rem $padding-3 0 0;
+
+        &--right {
+            float: right;
+            margin-left: $padding-3;
+            margin-right: 0;
+        }
+    }
 }
+
 
 /*
   Generic classes
@@ -90,7 +112,17 @@ a {
 }
 
 .contentPadding {
-    padding: $padding;
+    padding: $padding-2;
+
+    @include respond-to(small) {
+        padding: $padding;
+    }
+}
+
+.limit-width {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Home */

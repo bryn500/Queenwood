@@ -9,7 +9,7 @@
     });
 
     Promise.all([font.load(), fontBold.load()]).then(function () {
-        document.querySelector('body').classList.add('fontloaded');
+        document.querySelector('html').classList.add('fontloaded');
         app.setCookie('sv', 1, 7);
     }).catch(function () {
         console.error('Fonts failed to load');

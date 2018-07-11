@@ -5,7 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    margin-bottom: 1rem;
+    margin-bottom: $padding-3;
 
     &__text {
         flex: 0 1 7.5rem;
@@ -37,8 +37,8 @@
 }
 
 .alert {
-    padding: 1rem;
-    margin-bottom: 1rem;
+    padding: $padding-3;
+    margin-bottom: $padding-3;
 
     &--danger {
         color: $dangerColour;
@@ -60,7 +60,7 @@
 .btn {
     color: #fff;
     background-color: $buttonColour;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem $padding-1;
     @include font-size(14px);
     letter-spacing: 1px;
     border: 0;
