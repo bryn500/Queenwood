@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Queenwood.Core.Client.Etsy;
 using Queenwood.Core.Services.CacheService;
 using Queenwood.Core.Services.EmailService;
 using Queenwood.Models;
+using Queenwood.Core.Client.Etsy.Consts;
 
 namespace Queenwood.Controllers
 {
@@ -29,20 +28,24 @@ namespace Queenwood.Controllers
         {
             ViewData.Add("Title", "Products");
 
-            var model = _cacheService.Get("products", async () =>
+            var model = _cacheService.Get("products", () =>
             {
                 var products = new Products();
 
                 try
                 {
-                    var results = await _etsyClient.GetListings();
+                    var results = _etsyClient.GetListings().Result;
                     var shop = results.Data.results.First();
 
                     products.ShopName = shop.shop_name;
                     products.ShopUrl = shop.url;
                     products.ShopIcon = shop.icon_url_fullxfull;
                     products.ShopImage = shop.image_url_760x100;
-                    products.ShopListings = shop.Listings;
+
+                    products.ShopListings =
+                        shop.Listings.Where(x => x.state == ListingState.Active || x.state == ListingState.SoldOut) // active listings
+                                     .Where(x => x.Images != null && x.Images.Any()) // with images
+                                     .ToList();
                 }
                 catch (Exception ex)
                 {
@@ -62,11 +65,10 @@ namespace Queenwood.Controllers
                 products.PortfolioItems.Add(new ImageLink("https://picsum.photos/700/600/?random", 700, 600, "/", "Text Here"));
                 products.PortfolioItems.Add(new ImageLink("https://picsum.photos/g/500/600/?random", 500, 600, "/", "Text Here"));
 
-
                 return products;
             }, 60);
 
-            return View(model.Result);
+            return View(model);
         }
     }
 }
