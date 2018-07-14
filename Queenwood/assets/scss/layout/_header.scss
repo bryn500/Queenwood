@@ -67,9 +67,9 @@ $animation: ease-in-out 440ms;
     @include font-size(22px);
     display: inline-block;
     margin: 0 auto;
-    text-align: center;
+    text-align: center;    
+}
 
-    .nav {
-        visibility: hidden;
-    }
+.nav {
+    visibility: hidden;
 }
