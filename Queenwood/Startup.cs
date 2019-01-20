@@ -66,7 +66,8 @@ namespace Queenwood
                         Location = ResponseCacheLocation.None,
                         NoStore = true
                     });
-            });
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
             //services.AddSession();

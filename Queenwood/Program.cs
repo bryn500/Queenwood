@@ -19,7 +19,10 @@ namespace Queenwood
 
         public static IWebHost BuildWebHost(string[] args) =>
                 WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(c => c.AddServerHeader = false)
+                .ConfigureKestrel((context, options) =>
+                {
+                    options.AddServerHeader = false;
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
