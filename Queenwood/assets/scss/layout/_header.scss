@@ -64,10 +64,10 @@ $animation: ease-in-out 440ms;
 
 .logo {
     font-family: Palatino, Georgia, serif;
-    @include font-size(22px);
+    font-size: 1.414rem;
     display: inline-block;
     margin: 0 auto;
-    text-align: center;    
+    text-align: center;
 }
 
 .nav {

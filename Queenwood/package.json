@@ -31,6 +31,6 @@
   ],
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "npm run prod -- --watch"
+    "dev": "npm run build -- --watch"
   }
 }

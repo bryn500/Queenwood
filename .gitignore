@@ -5,6 +5,8 @@
 
 # User-specific files
 appsettings.Production.json
+appsettings.Development.json
+XMLFile.xml
 wwwroot*
 
 *.suo
@@ -331,3 +333,4 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+Queenwood/appsettings.Development.json

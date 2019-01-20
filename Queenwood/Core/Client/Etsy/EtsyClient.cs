@@ -4,6 +4,9 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Web;
 using Queenwood.Core.Client.Etsy.Model;
+using System.Linq;
+using Queenwood.Core.Client.Etsy.Consts;
+using System.Collections.Generic;
 
 namespace Queenwood.Core.Client.Etsy
 {
@@ -23,6 +26,15 @@ namespace Queenwood.Core.Client.Etsy
             queryString.Add("includes", "Listings/Images");
 
             return await Get<EtsyAPICall>(_etsyConfig.BaseUrl, $"/v2/shops/{_etsyConfig.EtsyShopId}?{queryString}");
+        }
+
+        public List<EtsyListing> ProcessListings(Task<APIResult<EtsyAPICall>> apiResult)
+        {
+            var shop = apiResult.Result.Data.results.First();
+
+            return shop.Listings.Where(x => x.state == ListingState.Active) // for sold out listings: ListingState.SoldOut
+                         .Where(x => x.Images != null && x.Images.Any()) // with images
+                         .ToList();
         }
     }
 }

@@ -9,7 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using NetEscapades.AspNetCore.SecurityHeaders;
+using Queenwood.Core.Client.Ebay;
 using Queenwood.Core.Client.Etsy;
+using Queenwood.Core.Client.Instagram;
 using Queenwood.Core.Services.CacheService;
 using Queenwood.Core.Services.EmailService;
 using Queenwood.Models.Config;
@@ -31,6 +33,8 @@ namespace Queenwood
             // Get config settings
             services.Configure<EmailConfig>(Configuration.GetSection("Emails"));
             services.Configure<EtsyConfig>(Configuration.GetSection("Etsy"));
+            services.Configure<EbayConfig>(Configuration.GetSection("Ebay"));
+            services.Configure<InstagramConfig>(Configuration.GetSection("Instagram"));
 
 
             // Configure Compression level
@@ -71,6 +75,8 @@ namespace Queenwood
             services.AddSingleton<ICacheService, CacheService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IEtsyClient, EtsyClient>();
+            services.AddTransient<IEbayClient, EbayClient>();
+            services.AddTransient<IInstagramClient, InstagramClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

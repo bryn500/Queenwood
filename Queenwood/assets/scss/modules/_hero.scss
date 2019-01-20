@@ -2,20 +2,16 @@
   Hero
 */
 .hero {
-    position: fixed;
+    /*position: fixed;
     left: 0;
     right: 0;
-    top: $headerHeight;
+    top: $headerHeight;*/
+    margin-top: $headerHeight;
     min-height: 25rem;
     height: calc(100vh - #{$headerHeight});
     background-size: cover;
     background-position: bottom center;
     background-repeat: no-repeat;
-
-    @include respond-to(small) {
-        left: $padding;
-        right: $padding;
-    }
 
     &__tagline {
         position: absolute;

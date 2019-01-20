@@ -8,6 +8,7 @@ namespace Queenwood.Models
     public class Image
     {
         public string Url { get; set; }
+        public string LowRes { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public string Alt { get; set; }

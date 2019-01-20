@@ -46,13 +46,8 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.414;
 }
 
-h1 {
+h1, h2 {
     margin: 0 0 1.414rem;
-    font-size: 2.369rem;
-    font-weight: 400;
-}
-
-h2 {
     font-size: 1.777rem;
     font-weight: 400;
 }
@@ -83,19 +78,23 @@ a {
 }
 
 .text-image {
-    margin: .414rem auto $padding-1;
+    margin: .414rem auto $padding;
     display: block;
 
-    @include respond-to(small) {
+    @include respond-to(big) {
         float: left;
         max-width: 100%;
-        margin: .414rem $padding-3 0 0;
+        margin: 0.7rem 3rem 0 0;
 
         &--right {
             float: right;
             margin-left: $padding-3;
             margin-right: 0;
         }
+    }
+
+    &--circle {
+        border-radius: 50%;
     }
 }
 
@@ -120,9 +119,13 @@ a {
 }
 
 .limit-width {
-    max-width: 900px;
+    max-width: 1060px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.hold-float {
+    overflow: hidden;
 }
 
 /* Home */

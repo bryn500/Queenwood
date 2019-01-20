@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Queenwood.Core.Client
 {
     public abstract class APIClient
     {
+        protected async Task<string> GetString(string baseUrl, string url)
+        {
+            using (var httpClient = GetHttpClient(baseUrl))
+            {
+                return await httpClient.GetStringAsync(url);
+            }
+        }
+
         protected async Task<APIResult<T>> Get<T>(string baseUrl, string url)
         {
             using (var httpClient = GetHttpClient(baseUrl))
@@ -24,7 +33,17 @@ namespace Queenwood.Core.Client
             using (var httpClient = GetHttpClient(baseUrl))
             {
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync<T>(url, payload);
+                return await CreateAPIResult(response);
+            }
+        }
 
+        protected async Task<APIResult> PostFormUrl(string baseUrl, string url, Dictionary<string, string> payload)
+        {
+            using (var httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) })
+            {
+                var content = new FormUrlEncodedContent(payload);
+
+                HttpResponseMessage response = await httpClient.PostAsync(url, content);
                 return await CreateAPIResult(response);
             }
         }
@@ -68,8 +87,8 @@ namespace Queenwood.Core.Client
                 BaseAddress = new Uri(baseUrl)
             };
 
-            c.DefaultRequestHeaders.Accept.Clear();
-            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //c.DefaultRequestHeaders.Accept.Clear();
+            //c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return c;
         }

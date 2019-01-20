@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Queenwood.Core.Client.Etsy.Model
 {
-    public class Listing
+    public class EtsyListing
     {
         public int listing_id { get; set; }
         public string state { get; set; }

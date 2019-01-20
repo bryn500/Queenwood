@@ -79,7 +79,7 @@ namespace Queenwood.Core.Services.CacheService
         public void RemoveAll()
         {
             for (int i = _cacheKeys.Count - 1; i >= 0; i--)
-          {
+            {
                 _cache.Remove(_cacheKeys[i]);
                 _cacheKeys.RemoveAt(i);
             }

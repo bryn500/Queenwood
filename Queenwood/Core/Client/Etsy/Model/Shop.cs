@@ -17,6 +17,6 @@ namespace Queenwood.Core.Client.Etsy.Model
         public bool is_vacation { get; set; }
         public string vacation_message { get; set; }
 
-        public List<Listing> Listings { get; set; }
+        public List<EtsyListing> Listings { get; set; }
     }
 }

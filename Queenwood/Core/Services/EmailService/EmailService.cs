@@ -44,7 +44,7 @@ namespace Queenwood.Core.Services.EmailService
                 message.From = new MailAddress(_emailConfig.EmailFrom);
                 message.To.Add(_emailConfig.ErrorEmail);
 
-                message.Subject = "Error on Queenwood Design";
+                message.Subject = "Error on " + Consts.BrandName;
                 message.Body = details;
 
                 await Send(new Result(), message);

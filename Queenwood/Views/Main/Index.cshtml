@@ -4,9 +4,18 @@
     </h1>
 </section>
 
-<div class="hero-spacer"></div>
+@*<img class="width-full display-block" src="
+                    https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_1680x224.1661431311_i3tefnjo.jpg?version=1" 
+            srcset="https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_3360x448.1661431311_i3tefnjo.jpg?version=1 3360w,
+                    https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_1680x224.1661431311_i3tefnjo.jpg?version=1 1680w,
+                    https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_1200x160.1661431311_i3tefnjo.jpg?version=1 1200w,
+                    https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_900x120.1661431311_i3tefnjo.jpg?version=1 900w,
+                    https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_640x85.1661431311_i3tefnjo.jpg?version=1 640w,
+                    https://i.etsystatic.com/ishbs/5dfcd3/1661431311/ishbs_480x64.1661431311_i3tefnjo.jpg?version=1 480w" sizes="100vw" alt="">*@
 
-<div class="aboveHero">
+@*<div class="hero-spacer"></div>*@
+
+@*<div class="aboveHero">*@
     @{
         var images = new List<ImageLink>();
 
@@ -28,7 +37,7 @@
                             <div class="imageLink__image">
                                 <img data-src="@il.Url" class="lazy" />
                             </div>
-                            <div class="imageLink__details">
+                            <div class="imgDetails">
                                 <p>@il.LinkText</p>
                             </div>
                         </a>
@@ -37,4 +46,4 @@
             </div>
         </div>
     </section>
-</div>
+@*</div>*@

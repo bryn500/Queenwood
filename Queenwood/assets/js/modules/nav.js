@@ -16,12 +16,24 @@ export default (function () {
         openMenuButton.classList.remove('is-open');
     }
 
-    openMenuButton.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (navOpen) {
+    document.addEventListener('click', function (e) {
+        var clicked = e.target;
+
+        // close menu if open and clicked outside
+        if (slideMenu.classList.contains('visible') && !clicked.closest('.js-nav')) {
             closeMenu();
-        } else {
-            openMenu();
+            return;
+        }
+
+        // handle click
+        if (clicked.classList.contains('js-menu')) {
+            e.preventDefault();
+
+            if (navOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
         }
     });
 
