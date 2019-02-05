@@ -22,7 +22,7 @@ namespace Queenwood.Core.Client.Ebay
     {
         private readonly EbayConfig _ebayConfig;
 
-        public EbayClient(IOptions<EbayConfig> ebayConfig)
+        public EbayClient(IOptions<EbayConfig> ebayConfig, IBaseClient baseClient) : base(baseClient)
         {
             _ebayConfig = ebayConfig.Value;
         }

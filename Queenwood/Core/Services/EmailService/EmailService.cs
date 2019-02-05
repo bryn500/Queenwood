@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using Queenwood.Models;
 using Queenwood.Models.Config;
+using Queenwood.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,9 +58,12 @@ namespace Queenwood.Core.Services.EmailService
                 using (var client = new SmtpClient(_emailConfig.SmtpClientHost)
                 {
                     UseDefaultCredentials = false,
+                    EnableSsl = true,
+                    Port = 587,
                     Credentials = new NetworkCredential(_emailConfig.SmtpUser, _emailConfig.SmtpPassword)
                 })
                 {
+
                     await client.SendMailAsync(message);
                     result.IsError = false;
                 }

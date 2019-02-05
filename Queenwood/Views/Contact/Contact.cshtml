@@ -2,17 +2,18 @@
 
 @{
     ViewBag.Title = "Bespoke Designs, Get in touch";
+    ViewBag.Description = "Get in touch";
+    ViewBag.Keywords = "Get in touch, Contact us";
 }
 
 <section class="header-spacer contentPadding limit-width">
-    <h1>Please get in touch with any Bespoke enquiries</h1>
+    <h1>Please get in touch with any enquiries</h1>
 
     <p>
         Please get in touch with us by telephone on <strong>01234 123456,</strong>
         or use the form below if you need any further information,
         wish to place an order or would like to discuss a bespoke design.
         We will be very pleased to help you.
-
     </p>
 
     @if (Model.Success)
@@ -23,7 +24,7 @@
     }
     else
     {
-        <form asp-controller="Main" asp-action="Bespoke" method="post">
+        <form asp-controller="Contact" asp-action="Contact" method="post">
 
             @if (!ViewData.ModelState.IsValid)
             {

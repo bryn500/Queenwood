@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace Queenwood.Models
+namespace Queenwood.Models.ViewModel
 {
     public class Contact
     {

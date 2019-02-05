@@ -1,43 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Queenwood.Core.Services.ContentfulService;
 using Queenwood.Core.Services.EmailService;
-using Queenwood.Models;
+using Queenwood.Models.ViewModel;
 
 namespace Queenwood.Controllers
 {
     [ResponseCache(CacheProfileName = "Default")]
-    public class MainController : Controller
+    public class ContactController : BaseController
     {
         private IEmailService _emailService;
 
-        public MainController(IEmailService emailService)
+        public ContactController(IEmailService emailService, IContentfulService contentfulService) : base(contentfulService)
         {
             _emailService = emailService;
         }
 
-        [HttpGet("")]
-        public IActionResult Index()
-        {
-            ViewData.Add("Title", "Home");
-
-            return View();
-        }
-
-        [HttpGet("/about")]
-        public IActionResult About()
-        {
-            ViewData.Add("Title", "About");
-
-            return View();
-        }
-
-        [HttpGet("bespoke")]
+        [HttpGet("contact")]
         [ResponseCache(CacheProfileName = "Never")]
-        public IActionResult Bespoke(bool success)
+        public IActionResult Contact(bool success)
         {
             var model = new Contact()
             {
@@ -48,10 +32,10 @@ namespace Queenwood.Controllers
         }
 
         [HttpPost]
-        [Route("bespoke")]
+        [Route("contact")]
         [ValidateAntiForgeryToken]
         [ResponseCache(CacheProfileName = "Never")]
-        public async Task<IActionResult> Bespoke(Contact model)
+        public async Task<IActionResult> Contact(Contact model)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +46,7 @@ namespace Queenwood.Controllers
 
             var result = await _emailService.SendEnquiry(model.Subject, message);
 
-            return RedirectToAction("Bespoke", new { success = true });
+            return RedirectToAction("Contact", new { success = true });
         }
     }
 }

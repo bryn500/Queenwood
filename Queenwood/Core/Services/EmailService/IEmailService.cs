@@ -1,4 +1,4 @@
-﻿using Queenwood.Models;
+﻿using Queenwood.Models.Shared;
 using System.Threading.Tasks;
 
 namespace Queenwood.Core.Services.EmailService

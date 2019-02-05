@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Queenwood.Core.Client.Instagram.Model;
-using Queenwood.Models;
 using Queenwood.Models.Config;
+using Queenwood.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -16,7 +16,7 @@ namespace Queenwood.Core.Client.Instagram
     {
         private readonly InstagramConfig _instagramConfig;
 
-        public InstagramClient(IOptions<InstagramConfig> instagramConfig)
+        public InstagramClient(IOptions<InstagramConfig> instagramConfig, IBaseClient baseClient) : base(baseClient)
         {
             _instagramConfig = instagramConfig.Value;
         }

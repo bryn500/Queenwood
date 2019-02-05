@@ -1,11 +1,12 @@
 ﻿using Queenwood.Core.Client.Ebay.Model;
 using Queenwood.Core.Client.Etsy.Model;
+using Queenwood.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Queenwood.Models
+namespace Queenwood.Models.ViewModel
 {
     public class Products
     {

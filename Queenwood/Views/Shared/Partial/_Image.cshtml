@@ -1,0 +1,25 @@
+﻿@model Queenwood.Models.Shared.IImage
+
+
+@if (Model.GetType() == typeof(Image))
+{
+    var img = (Image)Model;
+    <img src="@img.Url" class="text-image" alt="@img.Alt" />
+}
+else if (Model is ImageLink)
+{
+    var img = (ImageLink)Model;
+
+    <a href="@img.LinkUrl" class="imageLink text-image" style="padding-bottom:@img.AspectRatioPercentage%">
+        <div class="imageLink__image">
+            <img data-src="@img.Url" class="lazy" alt="@img.Alt" />
+        </div>
+        @if (!String.IsNullOrEmpty(img.LinkText))
+        {
+            <div class="imgDetails">
+                <p>@img.LinkText</p>
+            </div>
+        }
+    </a>
+
+}

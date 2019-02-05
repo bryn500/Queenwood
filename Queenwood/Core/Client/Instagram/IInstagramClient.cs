@@ -1,5 +1,5 @@
 ﻿using Queenwood.Core.Client.Instagram.Model;
-using Queenwood.Models;
+using Queenwood.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

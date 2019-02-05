@@ -77,6 +77,15 @@ a {
     text-decoration: none;
 }
 
+.text-image-container {
+    max-width: 300px;
+    margin: 0 auto;
+
+    @include respond-to(big) {
+        margin: 0;
+    }
+}
+
 .text-image {
     margin: .414rem auto $padding;
     display: block;
@@ -97,8 +106,6 @@ a {
         border-radius: 50%;
     }
 }
-
-
 /*
   Generic classes
 */
@@ -128,6 +135,11 @@ a {
     overflow: hidden;
 }
 
+.contentfulText {
+    ul p {
+        margin: 0;
+    }
+}
 /* Home */
 .homeOptions {
     background: #fff;

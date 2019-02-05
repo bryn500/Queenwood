@@ -10,42 +10,47 @@ namespace Queenwood.Core.Client
 {
     public abstract class APIClient
     {
+        private HttpClient _client;
+
+        protected APIClient(IBaseClient baseClient)
+        {
+            _client = baseClient.GetHttpClient();
+        }
+
         protected async Task<string> GetString(string baseUrl, string url)
         {
-            using (var httpClient = GetHttpClient(baseUrl))
-            {
-                return await httpClient.GetStringAsync(url);
-            }
+            //SetupHttpClient(baseUrl);
+
+            return await _client.GetStringAsync(baseUrl + url);
         }
 
         protected async Task<APIResult<T>> Get<T>(string baseUrl, string url)
         {
-            using (var httpClient = GetHttpClient(baseUrl))
-            {
-                HttpResponseMessage response = await httpClient.GetAsync(url);
+            //SetupHttpClient(baseUrl);
 
-                return await CreateAPIResult<T>(response);
-            }
+            HttpResponseMessage response = await _client.GetAsync(baseUrl + url);
+
+            return await CreateAPIResult<T>(response);
         }
 
-        protected async Task<APIResult> Post<T>(string baseUrl, string url, T payload)
-        {
-            using (var httpClient = GetHttpClient(baseUrl))
-            {
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync<T>(url, payload);
-                return await CreateAPIResult(response);
-            }
-        }
+        //protected async Task<APIResult> Post<T>(string baseUrl, string url, T payload)
+        //{
+        //    SetupHttpClient(baseUrl);
+
+        //    HttpResponseMessage response = await _client.PostAsJsonAsync<T>(url, payload);
+
+        //    return await CreateAPIResult(response);
+        //}
 
         protected async Task<APIResult> PostFormUrl(string baseUrl, string url, Dictionary<string, string> payload)
         {
-            using (var httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) })
-            {
-                var content = new FormUrlEncodedContent(payload);
+            //SetupHttpClient(baseUrl);
 
-                HttpResponseMessage response = await httpClient.PostAsync(url, content);
-                return await CreateAPIResult(response);
-            }
+            var content = new FormUrlEncodedContent(payload);
+
+            HttpResponseMessage response = await _client.PostAsync(baseUrl + url, content);
+
+            return await CreateAPIResult(response);
         }
 
         private async Task<APIResult> CreateAPIResult(HttpResponseMessage response)
@@ -80,17 +85,17 @@ namespace Queenwood.Core.Client
             return result;
         }
 
-        private HttpClient GetHttpClient(string baseUrl)
-        {
-            var c = new HttpClient
-            {
-                BaseAddress = new Uri(baseUrl)
-            };
+        //private void SetupHttpClient(string baseUrl)
+        //{
+        //    _client.BaseAddress = new Uri(baseUrl);
 
-            //c.DefaultRequestHeaders.Accept.Clear();
-            //c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //    //var c = new HttpClient
+        //    //{
+        //    //    BaseAddress = new Uri(baseUrl)
+        //    //};
 
-            return c;
-        }
+        //    //c.DefaultRequestHeaders.Accept.Clear();
+        //    //c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));            
+        //}
     }
 }

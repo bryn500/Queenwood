@@ -3,6 +3,7 @@
         <span class="menuButton__bar"></span>
         <span class="menuButton__bar"></span>
         <span class="menuButton__bar"></span>
+        <span class="hide">Toggle Menu</span>
     </a>
 
     <a asp-controller="Main" asp-action="Index" class="logo">
@@ -11,9 +12,17 @@
 
     <nav class="nav js-nav">
         <ul class="nav__list">
-            <li class="nav__item"><a asp-controller="Main" asp-action="About">About</a></li>
             <li class="nav__item"><a asp-controller="Products" asp-action="Products">Products</a></li>
-            <li class="nav__item"><a asp-controller="Main" asp-action="Bespoke">Bespoke</a></li>
+
+            @{
+                var navLinks = (List<KeyValuePair<string, string>>)ViewBag.NavLinks;
+                foreach (var item in navLinks)
+                {
+                    <li class="nav__item"><a href="@item.Key">@item.Value</a></li>
+                }
+            }
+            
+            <li class="nav__item"><a asp-controller="Contact" asp-action="Contact">Contact</a></li>
         </ul>
     </nav>
 </header>

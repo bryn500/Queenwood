@@ -7,18 +7,19 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Queenwood.Core.Client.Instagram;
-using Queenwood.Models;
+using Queenwood.Core.Services.ContentfulService;
 using Queenwood.Models.Config;
+using Queenwood.Models.ViewModel;
 
 namespace Queenwood.Controllers
 {
     [Route("instagram")]
-    public class InstagramController : Controller
+    public class InstagramController : BaseController
     {
         private readonly InstagramConfig _instagramConfig;
         private IInstagramClient _client;
 
-        public InstagramController(IOptions<InstagramConfig> instagramConfig, IInstagramClient client)
+        public InstagramController(IOptions<InstagramConfig> instagramConfig, IInstagramClient client, IContentfulService contentfulService) : base(contentfulService)
         {
             _instagramConfig = instagramConfig.Value;
             _client = client;

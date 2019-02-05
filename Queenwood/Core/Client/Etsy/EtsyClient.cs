@@ -14,7 +14,7 @@ namespace Queenwood.Core.Client.Etsy
     {
         private readonly EtsyConfig _etsyConfig;
 
-        public EtsyClient(IOptions<EtsyConfig> etsyConfig)
+        public EtsyClient(IOptions<EtsyConfig> etsyConfig, IBaseClient baseClient) : base(baseClient)
         {
             _etsyConfig = etsyConfig.Value;
         }

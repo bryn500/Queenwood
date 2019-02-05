@@ -1,0 +1,47 @@
+﻿@model Queenwood.Models.ViewModel.Webpage
+
+@if (Model.HeaderImage != null)
+{
+    <section class="hero js-dynamic-image" style="background-image:url('@Model.HeaderImage.LowRes');" data-dynamic-image-src="@Model.HeaderImage.Url">        
+        @if (!String.IsNullOrEmpty(Model.HeaderImageText))
+        {
+            <h1 class="hero__tagline">
+                @Model.HeaderImageText
+            </h1>
+        }
+    </section>
+}
+
+
+<section class="header-spacer contentPadding limit-width">
+    @foreach (var content in Model.PageContent)
+    {
+        if (content.Image != null)
+        {
+            <div class="text-image-container">
+                <partial name="Partial/_Image" model="content.Image" />
+            </div>
+        }
+
+        if (content.Gallery != null)
+        {
+            <div class="row">
+                <div class="row__inner">
+                    @foreach (var il in content.Gallery)
+                    {
+                        <div class="col col-xs-12 col-md-4">
+                            <partial name="Partial/_Image" model="il" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        if (!String.IsNullOrEmpty(content.Text))
+        {
+            <div class="clearfix contentfulText hold-float">
+                @Html.Raw(content.Text)
+            </div>            
+        }
+    }
+</section>

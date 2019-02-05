@@ -9,10 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using NetEscapades.AspNetCore.SecurityHeaders;
+using Queenwood.Core.Client;
 using Queenwood.Core.Client.Ebay;
 using Queenwood.Core.Client.Etsy;
 using Queenwood.Core.Client.Instagram;
 using Queenwood.Core.Services.CacheService;
+using Queenwood.Core.Services.ContentfulService;
 using Queenwood.Core.Services.EmailService;
 using Queenwood.Models.Config;
 
@@ -35,6 +37,7 @@ namespace Queenwood
             services.Configure<EtsyConfig>(Configuration.GetSection("Etsy"));
             services.Configure<EbayConfig>(Configuration.GetSection("Ebay"));
             services.Configure<InstagramConfig>(Configuration.GetSection("Instagram"));
+            services.Configure<ContentfulConfig>(Configuration.GetSection("ContentfulOptions"));
 
 
             // Configure Compression level
@@ -69,12 +72,13 @@ namespace Queenwood
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-
             //services.AddSession();
 
             // Add application services
+            services.AddSingleton<IBaseClient, BaseClient>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IContentfulService, ContentfulService>();
             services.AddTransient<IEtsyClient, EtsyClient>();
             services.AddTransient<IEbayClient, EbayClient>();
             services.AddTransient<IInstagramClient, InstagramClient>();

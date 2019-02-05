@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Queenwood.Models
+namespace Queenwood.Models.Shared
 {
-    public class Image
+    public class Image : IImage
     {
         public string Url { get; set; }
         public string LowRes { get; set; }
@@ -21,5 +21,10 @@ namespace Queenwood.Models
             Width = width;
             Height = height;
         }
+    }
+
+    public interface IImage
+    {
+
     }
 }

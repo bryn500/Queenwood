@@ -12,7 +12,12 @@
 
     <!--SEO -->
     <title>@ViewBag.Title | @Consts.BrandName</title>
-    <meta name="description" content="">
+    <meta name="description" content="@ViewBag.Description">
+    @if (!String.IsNullOrEmpty(ViewBag.Keywords))
+    {
+        <meta name="keywords" content="@ViewBag.Keywords">
+    }
+    @RenderSection("meta", required: false)
 
     <!--Fav Icons -->
     <partial name="Partial/_Favicons" />
