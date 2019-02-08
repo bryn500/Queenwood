@@ -113,7 +113,6 @@ namespace Queenwood
             // add cache control header to static resources
             app.UseStaticFiles(new StaticFileOptions()
             {
-
                 OnPrepareResponse = (context) =>
                 {
                     var headers = context.Context.Response.GetTypedHeaders();

@@ -1,4 +1,5 @@
-﻿using Queenwood.Models.Shared;
+﻿using Queenwood.Core.Services.ContentfulService.Model;
+using Queenwood.Models.Shared;
 using Queenwood.Models.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Queenwood.Core.Services.ContentfulService
     {
         List<Webpage> GetContentfulWebpages();
         List<string> GetContentfulUrls();
+        List<EbayCategoryFilter> GetEbayCategoryFilters();
         Task<ContentfulExampleModel> SearchContentful();
         string GetHeaderImagesAsBase64(Image image);
     }

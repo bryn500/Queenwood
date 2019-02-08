@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>0ad73d97-2acc-41cc-85a1-9b5224f51b90</UserSecretsId>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Core\Services\ContentfulService\Model\json.json" />
     <Content Remove="wwwroot\css\all.min.js" />
     <Content Remove="wwwroot\css\critical.min.js" />
   </ItemGroup>
@@ -124,12 +124,6 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Error\ServerError.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Main\About.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Main\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Contact\Contact.cshtml">

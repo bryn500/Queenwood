@@ -14,6 +14,7 @@ using System.Xml.Serialization;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Queenwood.Core.Client.Ebay.Model;
+using Queenwood.Core.Services.ContentfulService;
 using Queenwood.Models.Config;
 
 namespace Queenwood.Core.Client.Ebay
@@ -21,10 +22,12 @@ namespace Queenwood.Core.Client.Ebay
     public class EbayClient : APIClient, IEbayClient
     {
         private readonly EbayConfig _ebayConfig;
+        private readonly IContentfulService _contentfulService;
 
-        public EbayClient(IOptions<EbayConfig> ebayConfig, IBaseClient baseClient) : base(baseClient)
+        public EbayClient(IOptions<EbayConfig> ebayConfig, IContentfulService contentfulService, IBaseClient baseClient) : base(baseClient)
         {
             _ebayConfig = ebayConfig.Value;
+            _contentfulService = contentfulService;
         }
 
         // Finding API
@@ -54,7 +57,7 @@ namespace Queenwood.Core.Client.Ebay
             dynamic data = JsonConvert.DeserializeObject(json);
 
             return data;
-        }        
+        }
 
         // Trading API
         public async Task<HttpResponseMessage> GetUserListings(string userID)
@@ -114,7 +117,7 @@ namespace Queenwood.Core.Client.Ebay
             }
         }
 
-        public GetSellerListResponse ProcessListings(Task<HttpResponseMessage> message)
+        public List<Item> ProcessListings(Task<HttpResponseMessage> message)
         {
             var responseContent = message.Result.Content.ReadAsStringAsync().Result;
 
@@ -127,7 +130,33 @@ namespace Queenwood.Core.Client.Ebay
                 result = (GetSellerListResponse)serializer.Deserialize(reader);
             }
 
-            return result;
+            // Filter categories from contentful
+            var categoryFilters = _contentfulService.GetEbayCategoryFilters();
+            var includeCategories = categoryFilters.Where(x => x.IncludeOrIgnore).Select(x => x.Category).ToList();
+            var excludeCategoris = categoryFilters.Where(x => !x.IncludeOrIgnore).Select(x => x.Category).ToList();
+
+            foreach (var item in result.ItemArray.Items)
+            {
+                // Hide all items by default
+                item.Hide = true;
+
+                // Get list of cagtegories
+                var categories = item.PrimaryCategory.CategoryName.Split(':').ToList();
+
+                // Show items that are in an include category
+                foreach (var include in includeCategories)
+                    if (categories.Contains(include))
+                        item.Hide = false;
+
+                // Hide any that are also in an excluded category
+                foreach (var exclude in excludeCategoris)
+                    if (categories.Contains(exclude))
+                        item.Hide = true;
+            }
+
+            result.ItemArray.Items.RemoveAll(x => x.Hide);
+
+            return result.ItemArray.Items;
         }
     }
 }

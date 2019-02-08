@@ -10,6 +10,7 @@ using Queenwood.Models.Config;
 using Microsoft.Extensions.Options;
 using Queenwood.Models.ViewModel;
 using Queenwood.Core.Services.ContentfulService;
+using System.Linq;
 
 namespace Queenwood.Controllers
 {
@@ -69,7 +70,7 @@ namespace Queenwood.Controllers
                 try
                 {
                     products.Ebay.ShopUrl = Consts.EbayUrl;
-                    products.Ebay.ShopListings = _ebayClient.ProcessListings(ebayCall).ItemArray.Items;
+                    products.Ebay.ShopListings = _ebayClient.ProcessListings(ebayCall);
                 }
                 catch (Exception ex)
                 {

@@ -47,7 +47,6 @@ namespace Queenwood.Core.Services.ContentfulService
             _imageDBPath = _hostingEnvironment.WebRootPath + "/data/header-images.json";
         }
 
-        // todo: can we cache and also keep async?
         public List<Webpage> GetContentfulWebpages()
         {
             return _cacheService.Get("GetContentfulWebpages", () =>
@@ -59,7 +58,7 @@ namespace Queenwood.Core.Services.ContentfulService
                 return response.Select(x => new Webpage(x)).ToList();
             }, 1440);
         }
-
+        
         public List<string> GetContentfulUrls()
         {
             return _cacheService.Get("GetContentfulUrls", () =>
@@ -67,6 +66,18 @@ namespace Queenwood.Core.Services.ContentfulService
                 var webpages = GetContentfulWebpages();
 
                 return webpages.Select(x => x.Urlslug).ToList();
+            }, 1440);
+        }
+
+        public List<EbayCategoryFilter> GetEbayCategoryFilters()
+        {
+            return _cacheService.Get("GetEbayCategoryFilters", () =>
+            {
+                var builder = new QueryBuilder<EbayCategoryFilter>();
+
+                var response = _client.GetEntriesByType("ebayCategories", builder).Result.ToList();
+
+                return response.ToList();
             }, 1440);
         }
 

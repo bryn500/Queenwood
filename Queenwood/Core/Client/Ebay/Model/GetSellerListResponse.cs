@@ -38,6 +38,8 @@ namespace Queenwood.Core.Client.Ebay.Model
         public string Title { get; set; }
         [XmlElement(ElementName = "PictureDetails", Namespace = "urn:ebay:apis:eBLBaseComponents")]
         public PictureDetails PictureDetails { get; set; }
+
+        public bool Hide { get; set; }
     }
 
     [XmlRoot(ElementName = "ListingDetails", Namespace = "urn:ebay:apis:eBLBaseComponents")]

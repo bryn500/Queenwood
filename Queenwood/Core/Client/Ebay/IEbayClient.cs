@@ -11,6 +11,6 @@ namespace Queenwood.Core.Client.Ebay
     {
         dynamic SearchEbay(string searchTerm);
         Task<HttpResponseMessage> GetUserListings(string userID);
-        GetSellerListResponse ProcessListings(Task<HttpResponseMessage> message);
+        List<Item> ProcessListings(Task<HttpResponseMessage> message);
     }
 }

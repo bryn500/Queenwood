@@ -129,4 +129,13 @@ namespace Queenwood.Core.Services.ContentfulService.Model
         [JsonProperty("height")]
         public int Height { get; set; }
     }
+
+    public class EbayCategoryFilter
+    {
+        [JsonProperty("category")]
+        public string Category { get; set; }
+
+        [JsonProperty("includeOrIgnore")]
+        public bool IncludeOrIgnore { get; set; }
+    }
 }
