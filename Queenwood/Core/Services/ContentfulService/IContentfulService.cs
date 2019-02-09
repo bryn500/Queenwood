@@ -10,10 +10,17 @@ namespace Queenwood.Core.Services.ContentfulService
 {
     public interface IContentfulService
     {
+        // Main
         List<Webpage> GetContentfulWebpages();
         List<string> GetContentfulUrls();
         List<EbayCategoryFilter> GetEbayCategoryFilters();
-        Task<ContentfulExampleModel> SearchContentful();
         string GetHeaderImagesAsBase64(Image image);
+
+        // Preview
+        List<Webpage> PreviewContentfulWebpages();
+        List<string> PreviewContentfulUrls();
+
+        // Testing
+        Task<ContentfulExampleModel> SearchContentful();
     }
 }

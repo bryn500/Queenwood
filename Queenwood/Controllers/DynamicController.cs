@@ -26,7 +26,7 @@ namespace Queenwood.Controllers
 
             var model = _contentfulService.GetContentfulWebpages().Where(x => x.Urlslug == urlSlug).First();
 
-            if(model.HeaderImage != null)            
+            if (model.HeaderImage != null)
                 model.HeaderImage.LowRes = _contentfulService.GetHeaderImagesAsBase64(model.HeaderImage);
 
             ViewData.Add("Title", model.SEOTitle);
@@ -39,10 +39,10 @@ namespace Queenwood.Controllers
         [HttpGet("/preview/{urlSlug}")]
         public IActionResult DynamicPagePreview(string urlSlug)
         {
-            if (!_contentfulService.GetContentfulUrls().Contains(urlSlug))
+            if (!_contentfulService.PreviewContentfulUrls().Contains(urlSlug))
                 return NotFound();
 
-            var model = _contentfulService.GetContentfulWebpages().Where(x => x.Urlslug == urlSlug).First();
+            var model = _contentfulService.PreviewContentfulWebpages().Where(x => x.Urlslug == urlSlug).First();
 
             if (model.HeaderImage != null)
                 model.HeaderImage.LowRes = _contentfulService.GetHeaderImagesAsBase64(model.HeaderImage);

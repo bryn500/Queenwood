@@ -20,14 +20,16 @@ namespace Queenwood.Core.Services.ContentfulService
 {
     public class ContentfulService : IContentfulService
     {
-        private static object _imageLocker = new object();
+        private static readonly object _imageLocker = new object();
 
         private readonly IHostingEnvironment _hostingEnvironment;
-        private ICacheService _cacheService;
+        private readonly ICacheService _cacheService;
         private readonly ContentfulConfig _contentfulConfig;
         private readonly ContentfulClient _client;
+        private readonly ContentfulClient _previewClient;
 
-        private string _imageDBPath;
+
+        private readonly string _imageDBPath;
 
         public ContentfulService(IHostingEnvironment hostingEnvironment, ICacheService cacheService, IOptions<ContentfulConfig> contentfulConfig, IBaseClient baseClient)
         {
@@ -38,14 +40,29 @@ namespace Queenwood.Core.Services.ContentfulService
 
             var options = new ContentfulOptions()
             {
+                UsePreviewApi = false,
                 DeliveryApiKey = _contentfulConfig.DeliveryApiKey,
                 SpaceId = _contentfulConfig.SpaceId
             };
 
             _client = new ContentfulClient(baseClient.GetHttpClient(), options);
 
+            var previewOptions = new ContentfulOptions()
+            {
+                UsePreviewApi = true,
+                PreviewApiKey = _contentfulConfig.PreviewApiKey,
+                SpaceId = _contentfulConfig.SpaceId
+            };
+
+            _previewClient = new ContentfulClient(baseClient.GetHttpClient(), previewOptions);
+
             _imageDBPath = _hostingEnvironment.WebRootPath + "/data/header-images.json";
         }
+
+
+        /// 
+        /// Main methods
+        ///
 
         public List<Webpage> GetContentfulWebpages()
         {
@@ -58,7 +75,7 @@ namespace Queenwood.Core.Services.ContentfulService
                 return response.Select(x => new Webpage(x)).ToList();
             }, 1440);
         }
-        
+
         public List<string> GetContentfulUrls()
         {
             return _cacheService.Get("GetContentfulUrls", () =>
@@ -79,21 +96,7 @@ namespace Queenwood.Core.Services.ContentfulService
 
                 return response.ToList();
             }, 1440);
-        }
-
-        public async Task<ContentfulExampleModel> SearchContentful()
-        {
-            var builder = new QueryBuilder<dynamic>().Include(10);
-
-            var entries = await _client.GetEntriesByType("webpage", builder);
-
-            var contentfulExampleModel = new ContentfulExampleModel()
-            {
-                Entries = entries.ToList()
-            };
-
-            return contentfulExampleModel;
-        }
+        }        
 
         public string GetHeaderImagesAsBase64(Image image)
         {
@@ -146,6 +149,46 @@ namespace Queenwood.Core.Services.ContentfulService
                     }
                 }
             }
+        }
+
+        ///
+        /// Preview Methods
+        /// No caching for preview client results - don't want to reset cache when previewing changes
+        /// 
+
+        public List<Webpage> PreviewContentfulWebpages()
+        {            
+            var builder = new QueryBuilder<ContentfulWebpage>().Include(10);
+
+            var response = _previewClient.GetEntriesByType("webpage", builder).Result.ToList();
+
+            return response.Select(x => new Webpage(x)).ToList();
+        }
+
+        public List<string> PreviewContentfulUrls()
+        {
+            var webpages = GetContentfulWebpages();
+
+            return webpages.Select(x => x.Urlslug).ToList();
+        }
+
+
+        /// 
+        /// Testing Methods
+        /// 
+
+        public async Task<ContentfulExampleModel> SearchContentful()
+        {
+            var builder = new QueryBuilder<dynamic>().Include(10);
+
+            var entries = await _client.GetEntriesByType("webpage", builder);
+
+            var contentfulExampleModel = new ContentfulExampleModel()
+            {
+                Entries = entries.ToList()
+            };
+
+            return contentfulExampleModel;
         }
     }
 

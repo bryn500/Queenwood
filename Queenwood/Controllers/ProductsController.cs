@@ -10,7 +10,6 @@ using Queenwood.Models.Config;
 using Microsoft.Extensions.Options;
 using Queenwood.Models.ViewModel;
 using Queenwood.Core.Services.ContentfulService;
-using System.Linq;
 
 namespace Queenwood.Controllers
 {
@@ -49,11 +48,11 @@ namespace Queenwood.Controllers
             {
                 var products = new Products();
 
-                // todo: Figure out how to fire all async tasks at same time using same instance of httpclient and process in order of completion
+                var etsyCall = _etsyClient.GetListings();
+                var ebayCall = _ebayClient.GetUserListings(_ebayConfig.UserId);
+                var instagramCall = _instagramClient.GetRecentMedia();
 
                 // etsy
-                var etsyCall = _etsyClient.GetListings();
-
                 try
                 {
                     products.Etsy.ShopUrl = Consts.EtsyUrl;
@@ -64,9 +63,7 @@ namespace Queenwood.Controllers
                     _emailService.SendErrorAlert(ex.ToString());
                 }
 
-                // ebay
-                var ebayCall = _ebayClient.GetUserListings(_ebayConfig.UserId);
-
+                // ebay                
                 try
                 {
                     products.Ebay.ShopUrl = Consts.EbayUrl;
@@ -77,9 +74,7 @@ namespace Queenwood.Controllers
                     _emailService.SendErrorAlert(ex.ToString());
                 }
 
-                // instagram
-                var instagramCall = _instagramClient.GetRecentMedia();
-
+                // instagram                
                 try
                 {
                     products.Instagram.Url = Consts.InstagramUrl;
