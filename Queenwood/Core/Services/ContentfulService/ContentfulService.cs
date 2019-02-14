@@ -20,24 +20,23 @@ namespace Queenwood.Core.Services.ContentfulService
 {
     public class ContentfulService : IContentfulService
     {
-        private static readonly object _imageLocker = new object();
-
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ICacheService _cacheService;
         private readonly ContentfulConfig _contentfulConfig;
+        private readonly string _imageDBPath;
+
         private readonly ContentfulClient _client;
         private readonly ContentfulClient _previewClient;
-
-
-        private readonly string _imageDBPath;
 
         public ContentfulService(IHostingEnvironment hostingEnvironment, ICacheService cacheService, IOptions<ContentfulConfig> contentfulConfig, IBaseClient baseClient)
         {
             _hostingEnvironment = hostingEnvironment;
             _cacheService = cacheService;
-
             _contentfulConfig = contentfulConfig.Value;
 
+            _imageDBPath = _hostingEnvironment.WebRootPath + "/data/header-images.json";
+
+            // Build Contentful client
             var options = new ContentfulOptions()
             {
                 UsePreviewApi = false,
@@ -47,6 +46,7 @@ namespace Queenwood.Core.Services.ContentfulService
 
             _client = new ContentfulClient(baseClient.GetHttpClient(), options);
 
+            // Build Contentful preview client
             var previewOptions = new ContentfulOptions()
             {
                 UsePreviewApi = true,
@@ -54,9 +54,7 @@ namespace Queenwood.Core.Services.ContentfulService
                 SpaceId = _contentfulConfig.SpaceId
             };
 
-            _previewClient = new ContentfulClient(baseClient.GetHttpClient(), previewOptions);
-
-            _imageDBPath = _hostingEnvironment.WebRootPath + "/data/header-images.json";
+            _previewClient = new ContentfulClient(baseClient.GetHttpClient(), previewOptions);            
         }
 
 
@@ -64,110 +62,107 @@ namespace Queenwood.Core.Services.ContentfulService
         /// Main methods
         ///
 
-        public List<Webpage> GetContentfulWebpages()
+        public async Task<List<Webpage>> GetContentfulWebpages()
         {
-            return _cacheService.Get("GetContentfulWebpages", () =>
+            return await _cacheService.GetAsync("GetContentfulWebpages", async () =>
             {
                 var builder = new QueryBuilder<ContentfulWebpage>().Include(10);
 
-                var response = _client.GetEntriesByType("webpage", builder).Result.ToList();
+                var response = await _client.GetEntriesByType("webpage", builder);
 
                 return response.Select(x => new Webpage(x)).ToList();
-            }, 1440);
+            }, 1440).Unwrap();
         }
 
-        public List<string> GetContentfulUrls()
+        public async Task<List<string>> GetContentfulUrls()
         {
-            return _cacheService.Get("GetContentfulUrls", () =>
+            return await _cacheService.GetAsync("GetContentfulUrls", async () =>
             {
-                var webpages = GetContentfulWebpages();
+                var webpages = await GetContentfulWebpages();
 
                 return webpages.Select(x => x.Urlslug).ToList();
-            }, 1440);
+            }, 1440).Unwrap();
         }
 
-        public List<EbayCategoryFilter> GetEbayCategoryFilters()
+        public async Task<List<EbayCategoryFilter>> GetEbayCategoryFilters()
         {
-            return _cacheService.Get("GetEbayCategoryFilters", () =>
+            return await _cacheService.GetAsync("GetEbayCategoryFilters", async () =>
             {
                 var builder = new QueryBuilder<EbayCategoryFilter>();
 
-                var response = _client.GetEntriesByType("ebayCategories", builder).Result.ToList();
+                var response = await _client.GetEntriesByType("ebayCategories", builder);
 
                 return response.ToList();
-            }, 1440);
-        }        
+            }, 1440).Unwrap();
+        }
 
-        public string GetHeaderImagesAsBase64(Image image)
+        public async Task<string> GetHeaderImagesAsBase64(Image image)
         {
-            // lock open file
-            lock (_imageLocker)
+            // Read data
+            var json = await System.IO.File.ReadAllTextAsync(_imageDBPath);
+
+            // Deserialize
+            var data = JsonConvert.DeserializeObject<HeaderImagesDB>(json);
+
+            // look up by url
+            var record = data.HeaderImages.FirstOrDefault(x => x.Url == image.Url);
+
+            // if exists
+            if (record != null)
             {
-                // Read data
-                var json = System.IO.File.ReadAllText(_imageDBPath);
+                // return base64
+                return record.Base64;
+            }
+            else
+            {
+                // download low quality webp image
+                var resultUrl = $"https:{image.Url}?fm=webp&q=1";
 
-                // Deserialize
-                var data = JsonConvert.DeserializeObject<HeaderImagesDB>(json);
-
-                // look up by url
-                var record = data.HeaderImages.FirstOrDefault(x => x.Url == image.Url);
-
-                // if exists
-                if (record != null)
+                using (var client = new WebClient())
                 {
-                    // return base64
-                    return record.Base64;
-                }
-                else
-                {
-                    // download low quality webp image
-                    var resultUrl = $"https:{image.Url}?fm=webp&q=1";
+                    // download
+                    byte[] imageBytes = await client.DownloadDataTaskAsync(new Uri(resultUrl));
 
-                    using (var client = new WebClient())
+                    // convert               
+                    var base64 = "data:image/webp;base64," + Convert.ToBase64String(imageBytes);
+
+                    // Add new base64 result to list
+                    data.HeaderImages.Add(new HeaderImageDB()
                     {
-                        // download
-                        byte[] imageBytes = client.DownloadData(resultUrl);
+                        Url = image.Url,
+                        Base64 = base64
+                    });
 
-                        // convert               
-                        var base64 = "data:image/webp;base64," + Convert.ToBase64String(imageBytes);
+                    // Convert back to JSON string
+                    var newData = JsonConvert.SerializeObject(data);
 
-                        // Add new base64 result to list
-                        data.HeaderImages.Add(new HeaderImageDB()
-                        {
-                            Url = image.Url,
-                            Base64 = base64
-                        });
+                    // write back changes to file
+                    await System.IO.File.WriteAllTextAsync(_imageDBPath, newData);
 
-                        // Convert back to JSON string
-                        var newData = JsonConvert.SerializeObject(data);
-
-                        // write back changes to file
-                        System.IO.File.WriteAllText(_imageDBPath, newData);
-
-                        // return new base 64 url
-                        return base64;
-                    }
+                    // return new base 64 url
+                    return base64;
                 }
             }
         }
+
 
         ///
         /// Preview Methods
         /// No caching for preview client results - don't want to reset cache when previewing changes
         /// 
 
-        public List<Webpage> PreviewContentfulWebpages()
-        {            
+        public async Task<List<Webpage>> PreviewContentfulWebpages()
+        {
             var builder = new QueryBuilder<ContentfulWebpage>().Include(10);
 
-            var response = _previewClient.GetEntriesByType("webpage", builder).Result.ToList();
+            var response = await _previewClient.GetEntriesByType("webpage", builder);
 
             return response.Select(x => new Webpage(x)).ToList();
         }
 
-        public List<string> PreviewContentfulUrls()
+        public async Task<List<string>> PreviewContentfulUrls()
         {
-            var webpages = GetContentfulWebpages();
+            var webpages = await GetContentfulWebpages();
 
             return webpages.Select(x => x.Urlslug).ToList();
         }

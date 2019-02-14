@@ -12,7 +12,7 @@ namespace Queenwood.Controllers
     [ResponseCache(CacheProfileName = "Default")]
     public class ContactController : BaseController
     {
-        private IEmailService _emailService;
+        private readonly IEmailService _emailService;
 
         public ContactController(IEmailService emailService, IContentfulService contentfulService) : base(contentfulService)
         {

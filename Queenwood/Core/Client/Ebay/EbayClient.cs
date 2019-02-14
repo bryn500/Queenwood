@@ -14,6 +14,7 @@ using System.Xml.Serialization;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Queenwood.Core.Client.Ebay.Model;
+using Queenwood.Core.Services.CacheService;
 using Queenwood.Core.Services.ContentfulService;
 using Queenwood.Models.Config;
 
@@ -23,15 +24,19 @@ namespace Queenwood.Core.Client.Ebay
     {
         private readonly EbayConfig _ebayConfig;
         private readonly IContentfulService _contentfulService;
+        private readonly ICacheService _cacheService;
+        private readonly IBaseClient _baseClient;
 
-        public EbayClient(IOptions<EbayConfig> ebayConfig, IContentfulService contentfulService, IBaseClient baseClient) : base(baseClient)
+        public EbayClient(IOptions<EbayConfig> ebayConfig, IContentfulService contentfulService, ICacheService cacheService, IBaseClient baseClient) : base(baseClient)
         {
             _ebayConfig = ebayConfig.Value;
             _contentfulService = contentfulService;
+            _cacheService = cacheService;
+            _baseClient = baseClient;
         }
 
         // Finding API
-        public dynamic SearchEbay(string searchTerm)
+        public async Task<dynamic> SearchEbay(string searchTerm)
         {
             const int pageSize = 30;
 
@@ -52,7 +57,7 @@ namespace Queenwood.Core.Client.Ebay
             // Payload
             sb.AppendFormat("&REST-PAYLOAD&keywords={0}&paginationInput.entriesPerPage={1}&GLOBAL-ID=EBAY-GB&siteid=3", HttpUtility.UrlEncode(searchTerm), pageSize);
 
-            var json = GetString("https://svcs.ebay.com/", sb.ToString()).Result;
+            var json = await GetStringAsync("https://svcs.ebay.com/", sb.ToString());
 
             dynamic data = JsonConvert.DeserializeObject(json);
 
@@ -60,7 +65,67 @@ namespace Queenwood.Core.Client.Ebay
         }
 
         // Trading API
-        public async Task<HttpResponseMessage> GetUserListings(string userID)
+        public async Task<List<Item>> GetUserListings(string userID)
+        {
+            return await _cacheService.GetAsync("GetEbayUserListings", async () =>
+            {
+                var client = _baseClient.GetHttpClient();
+
+                var task = await client.SendAsync(BuildGetUserListingsRequest(userID));
+                var responseContent = await task.Content.ReadAsStringAsync();
+
+                var results = DeserializeResult(responseContent);
+
+                return await ProcessResults(results);
+            }, 1440).Unwrap();
+        }
+
+        private GetSellerListResponse DeserializeResult(string responseContent)
+        {
+            var result = new GetSellerListResponse();
+
+            var serializer = new XmlSerializer(typeof(GetSellerListResponse));
+
+            using (var reader = new StringReader(responseContent))
+            {
+                result = (GetSellerListResponse)serializer.Deserialize(reader);
+            }
+
+            return result;
+        }
+
+        private async Task<List<Item>> ProcessResults(GetSellerListResponse result)
+        {
+            // Filter categories from contentful
+            var categoryFilters = await _contentfulService.GetEbayCategoryFilters();
+            var includeCategories = categoryFilters.Where(x => x.IncludeOrIgnore).Select(x => x.Category).ToList();
+            var excludeCategoris = categoryFilters.Where(x => !x.IncludeOrIgnore).Select(x => x.Category).ToList();
+
+            foreach (var item in result.ItemArray.Items)
+            {
+                // Hide all items by default
+                item.Hide = true;
+
+                // Get list of cagtegories
+                var categories = item.PrimaryCategory.CategoryName.Split(':').ToList();
+
+                // Show items that are in an include category
+                foreach (var include in includeCategories)
+                    if (categories.Contains(include))
+                        item.Hide = false;
+
+                // Hide any that are also in an excluded category
+                foreach (var exclude in excludeCategoris)
+                    if (categories.Contains(exclude))
+                        item.Hide = true;
+            }
+
+            result.ItemArray.Items.RemoveAll(x => x.Hide);
+
+            return result.ItemArray.Items;
+        }
+
+        private HttpRequestMessage BuildGetUserListingsRequest(string userID)
         {
             const string methodName = "GetSellerList";
             const string version = "1085";
@@ -89,6 +154,7 @@ namespace Queenwood.Core.Client.Ebay
             ));
 
             string payload;
+
             using (var sw = new MemoryStream())
             {
                 using (var strw = new StreamWriter(sw, Encoding.UTF8))
@@ -98,65 +164,20 @@ namespace Queenwood.Core.Client.Ebay
                 }
             }
 
-            using (var httpClient = new HttpClient())
+            var httpContent = new StringContent(payload, Encoding.UTF8, "application/xml");
+
+            var request = new HttpRequestMessage()
             {
-                var httpContent = new StringContent(payload, Encoding.UTF8, "application/xml"); // or application/xml
+                RequestUri = new Uri("https://api.ebay.com/ws/api.dll"),
+                Method = HttpMethod.Post,
+                Content = httpContent
+            };
 
-                var request = new HttpRequestMessage()
-                {
-                    RequestUri = new Uri("https://api.ebay.com/ws/api.dll"),
-                    Method = HttpMethod.Post,
-                    Content = httpContent
-                };
+            request.Headers.Add("X-EBAY-API-COMPATIBILITY-LEVEL", version);
+            request.Headers.Add("X-EBAY-API-CALL-NAME", methodName);
+            request.Headers.Add("X-EBAY-API-SITEID", siteId.ToString());
 
-                request.Headers.Add("X-EBAY-API-COMPATIBILITY-LEVEL", version);
-                request.Headers.Add("X-EBAY-API-CALL-NAME", methodName);
-                request.Headers.Add("X-EBAY-API-SITEID", siteId.ToString());
-
-                return await httpClient.SendAsync(request);
-            }
-        }
-
-        public List<Item> ProcessListings(Task<HttpResponseMessage> message)
-        {
-            var responseContent = message.Result.Content.ReadAsStringAsync().Result;
-
-            var serializer = new XmlSerializer(typeof(GetSellerListResponse));
-
-            GetSellerListResponse result = new GetSellerListResponse();
-
-            using (var reader = new StringReader(responseContent))
-            {
-                result = (GetSellerListResponse)serializer.Deserialize(reader);
-            }
-
-            // Filter categories from contentful
-            var categoryFilters = _contentfulService.GetEbayCategoryFilters();
-            var includeCategories = categoryFilters.Where(x => x.IncludeOrIgnore).Select(x => x.Category).ToList();
-            var excludeCategoris = categoryFilters.Where(x => !x.IncludeOrIgnore).Select(x => x.Category).ToList();
-
-            foreach (var item in result.ItemArray.Items)
-            {
-                // Hide all items by default
-                item.Hide = true;
-
-                // Get list of cagtegories
-                var categories = item.PrimaryCategory.CategoryName.Split(':').ToList();
-
-                // Show items that are in an include category
-                foreach (var include in includeCategories)
-                    if (categories.Contains(include))
-                        item.Hide = false;
-
-                // Hide any that are also in an excluded category
-                foreach (var exclude in excludeCategoris)
-                    if (categories.Contains(exclude))
-                        item.Hide = true;
-            }
-
-            result.ItemArray.Items.RemoveAll(x => x.Hide);
-
-            return result.ItemArray.Items;
+            return request;
         }
     }
 }

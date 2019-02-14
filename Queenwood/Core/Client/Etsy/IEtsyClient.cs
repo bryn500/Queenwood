@@ -8,7 +8,6 @@ namespace Queenwood.Core.Client.Etsy
 {
     public interface IEtsyClient
     {
-        Task<APIResult<EtsyAPICall>> GetListings();
-        List<EtsyListing> ProcessListings(Task<APIResult<EtsyAPICall>> apiResult);
+        Task<List<EtsyListing>> GetListings();
     }
 }

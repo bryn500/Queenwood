@@ -10,17 +10,18 @@ using Queenwood.Models.Config;
 using Microsoft.Extensions.Options;
 using Queenwood.Models.ViewModel;
 using Queenwood.Core.Services.ContentfulService;
+using System.Threading.Tasks;
 
 namespace Queenwood.Controllers
 {
     [ResponseCache(CacheProfileName = "Default")]
     public class ProductsController : BaseController
     {
-        private ICacheService _cacheService;
-        private IEmailService _emailService;
-        private IEtsyClient _etsyClient;
-        private IEbayClient _ebayClient;
-        private IInstagramClient _instagramClient;
+        private readonly ICacheService _cacheService;
+        private readonly IEmailService _emailService;
+        private readonly IEtsyClient _etsyClient;
+        private readonly IEbayClient _ebayClient;
+        private readonly IInstagramClient _instagramClient;
 
         private readonly EbayConfig _ebayConfig;
 
@@ -38,47 +39,29 @@ namespace Queenwood.Controllers
         }
 
         [HttpGet("products")]
-        public IActionResult Products()
+        public async Task<IActionResult> Products()
         {
             ViewData.Add("Title", "Products");
             ViewData.Add("Description", "Items for sale, past portfolio");
             ViewData.Add("Keywords", "Products, For sale, portfolio");
 
-            var model = _cacheService.Get("products", () =>
+            var model = await _cacheService.GetAsync("products", async () =>
             {
                 var products = new Products();
 
-                var etsyCall = _etsyClient.GetListings();
-                var ebayCall = _ebayClient.GetUserListings(_ebayConfig.UserId);
-                var instagramCall = _instagramClient.GetRecentMedia();
-
-                // etsy
                 try
                 {
+                    var etsyTask = _etsyClient.GetListings();
+                    var ebayTask = _ebayClient.GetUserListings(_ebayConfig.UserId);
+                    var instagramTask = _instagramClient.GetRecentMedia();
+
+                    products.Etsy.ShopListings = await etsyTask;
+                    products.Ebay.ShopListings = await ebayTask;
+                    products.Instagram.PortfolioItems = await instagramTask;
+
                     products.Etsy.ShopUrl = Consts.EtsyUrl;
-                    products.Etsy.ShopListings = _etsyClient.ProcessListings(etsyCall);
-                }
-                catch (Exception ex)
-                {
-                    _emailService.SendErrorAlert(ex.ToString());
-                }
-
-                // ebay                
-                try
-                {
                     products.Ebay.ShopUrl = Consts.EbayUrl;
-                    products.Ebay.ShopListings = _ebayClient.ProcessListings(ebayCall);
-                }
-                catch (Exception ex)
-                {
-                    _emailService.SendErrorAlert(ex.ToString());
-                }
-
-                // instagram                
-                try
-                {
                     products.Instagram.Url = Consts.InstagramUrl;
-                    products.Instagram.PortfolioItems = _instagramClient.ProcessRecentMediaResult(instagramCall);
                 }
                 catch (Exception ex)
                 {
@@ -86,7 +69,7 @@ namespace Queenwood.Controllers
                 }
 
                 return products;
-            }, 60);
+            }, 60).Unwrap();
 
             return View(model);
         }

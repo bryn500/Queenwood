@@ -9,8 +9,7 @@ namespace Queenwood.Core.Client.Ebay
 {
     public interface IEbayClient
     {
-        dynamic SearchEbay(string searchTerm);
-        Task<HttpResponseMessage> GetUserListings(string userID);
-        List<Item> ProcessListings(Task<HttpResponseMessage> message);
+        Task<dynamic> SearchEbay(string searchTerm);
+        Task<List<Item>> GetUserListings(string userID);
     }
 }

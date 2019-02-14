@@ -38,7 +38,7 @@ namespace Queenwood.Controllers
             {
                 throw new Exception("test");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _emailService.SendErrorAlert(ex.ToString());
             }

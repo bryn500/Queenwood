@@ -10,19 +10,24 @@ namespace Queenwood.Controllers
 {
     public abstract class BaseController : Controller
     {
-        protected IContentfulService _contentfulService;
+        protected readonly IContentfulService _contentfulService;
 
         public BaseController(IContentfulService contentfulService)
         {
             _contentfulService = contentfulService;
         }
 
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        public override async void OnActionExecuted(ActionExecutedContext filterContext)
         {
             base.OnActionExecuted(filterContext);
+            await SetNavLinks();
+        }
 
-            ViewBag.NavLinks = _contentfulService
-                .GetContentfulWebpages().Where(x => x.InNav == true)
+        private async Task SetNavLinks()
+        {
+            var webpages = await _contentfulService.GetContentfulWebpages();
+
+            ViewBag.NavLinks = webpages.Where(x => x.InNav == true)
                 .Select(x => new KeyValuePair<string, string>("/" + x.Urlslug.TrimStart('/'), x.Title))
                 .ToList();
         }

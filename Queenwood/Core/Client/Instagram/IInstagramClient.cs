@@ -10,7 +10,6 @@ namespace Queenwood.Core.Client.Instagram
     public interface IInstagramClient
     {
         Task<APIResult> GetAccessToken(string code);
-        Task<APIResult<GetRecentMediaResponse>> GetRecentMedia();
-        List<ImageLink> ProcessRecentMediaResult(Task<APIResult<GetRecentMediaResponse>> apiResult);
+        Task<List<ImageLink>> GetRecentMedia();
     }
 }

@@ -11,14 +11,14 @@ namespace Queenwood.Core.Services.ContentfulService
     public interface IContentfulService
     {
         // Main
-        List<Webpage> GetContentfulWebpages();
-        List<string> GetContentfulUrls();
-        List<EbayCategoryFilter> GetEbayCategoryFilters();
-        string GetHeaderImagesAsBase64(Image image);
+        Task<List<Webpage>> GetContentfulWebpages();
+        Task<List<string>> GetContentfulUrls();
+        Task<List<EbayCategoryFilter>> GetEbayCategoryFilters();
+        Task<string> GetHeaderImagesAsBase64(Image image);
 
         // Preview
-        List<Webpage> PreviewContentfulWebpages();
-        List<string> PreviewContentfulUrls();
+        Task<List<Webpage>> PreviewContentfulWebpages();
+        Task<List<string>> PreviewContentfulUrls();
 
         // Testing
         Task<ContentfulExampleModel> SearchContentful();

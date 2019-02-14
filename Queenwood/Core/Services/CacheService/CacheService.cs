@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Queenwood.Core.Services.CacheService
 {
     public class CacheService : ICacheService
     {
-        private IMemoryCache _cache;
+        private readonly IMemoryCache _cache;
         private static List<String> _cacheKeys = new List<string>();
 
         public CacheService(IMemoryCache cache)
@@ -55,12 +56,35 @@ namespace Queenwood.Core.Services.CacheService
 
                 if (obj != null)
                 {
-                    _cache.Set<T>(keyName, obj, DateTime.Now.AddMinutes(expiryMins));
+                    _cache.Set<T>(keyName, obj, TimeSpan.FromMinutes(expiryMins));
                     _cacheKeys.Add(keyName);
                 }
 
                 return obj;
             }
+        }
+
+        /// <summary>
+        /// await CacheHelper.GetAsync(cacheKey, () => { return Model }, 60);
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="keyName">Unique name of cache entry</param>
+        /// <param name="creator">Function to generate data to be cached</param>
+        /// <param name="expiryMins">Time in mins to keep entry in the cache</param>
+        /// <returns></returns>
+        public async Task<T> GetAsync<T>(string keyName, Func<T> creator, int expiryMins)
+        {
+            return await _cache.GetOrCreateAsync(keyName, entry =>
+            {
+                lock (GetLockObj(keyName))
+                {
+                    if (!_cacheKeys.Contains(keyName))
+                        _cacheKeys.Add(keyName);
+
+                    entry.SlidingExpiration = TimeSpan.FromMinutes(expiryMins);
+                    return Task.FromResult(creator());
+                }
+            });
         }
 
         /// <summary>
