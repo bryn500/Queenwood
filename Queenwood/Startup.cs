@@ -22,12 +22,12 @@ namespace Queenwood
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -52,6 +52,14 @@ namespace Queenwood
 
             // Cache on server based on client cache rules
             services.AddResponseCaching();
+
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
+            });
 
             // Client side caching profiles, keep small because no way to invalidate
             services.AddMvc(options =>
@@ -105,10 +113,15 @@ namespace Queenwood
 
                 // output caching in production
                 app.UseResponseCaching();
+
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
             // Gzip
             app.UseResponseCompression();
+
+            app.UseHttpsRedirection();
 
             // add cache control header to static resources
             app.UseStaticFiles(new StaticFileOptions()
@@ -124,8 +137,10 @@ namespace Queenwood
                 }
             });
 
+            app.UseCookiePolicy();
+
             // Enable sessions
-            //app.UseSession();            
+            //app.UseSession();
 
             // don't pass routes for Attribute routing
             app.UseMvc();
