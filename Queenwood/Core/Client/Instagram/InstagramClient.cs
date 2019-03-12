@@ -3,6 +3,7 @@ using Queenwood.Core.Client.Instagram.Model;
 using Queenwood.Core.Services.CacheService;
 using Queenwood.Models.Config;
 using Queenwood.Models.Shared;
+using Queenwood.Models.VIewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -36,7 +37,7 @@ namespace Queenwood.Core.Client.Instagram
             return await PostFormUrlAsync(_instagramConfig.BaseUrl, $"/oauth/access_token", payload);
         }
 
-        public async Task<List<ImageLink>> GetRecentMedia()
+        public async Task<List<InstagramMedia>> GetRecentMedia()
         {
             return await _cacheService.GetAsync("GetRecentInstagramMedia", async () =>
             {
@@ -44,37 +45,59 @@ namespace Queenwood.Core.Client.Instagram
                 queryString.Add("access_token", _instagramConfig.AccessToken);
 
                 // Get instagram images
-                var instagramResults =  await GetAsync<GetRecentMediaResponse>(_instagramConfig.BaseUrl, $"/v1/users/self/media/recent/?{queryString}");                
+                var instagramResults = await GetAsync<GetRecentMediaResponse>(_instagramConfig.BaseUrl, $"/v1/users/self/media/recent/?{queryString}");
 
-                List<ImageLink> items = null;
+                List<InstagramMedia> items = null;
 
                 if (instagramResults != null)
                 {
-                    items = new List<ImageLink>();
+                    items = new List<InstagramMedia>();
 
-                    items = instagramResults.Data.Data
-                        .Where(x => x.Images != null)
-                        .Select(x => new ImageLink(
-                            x.Images.StandardResolution.Url,
-                            x.Images.StandardResolution.Width,
-                            x.Images.StandardResolution.Height,
-                            x.Link, "")
+                    foreach (var result in instagramResults.Data.Data)
+                    {
+                        if (result.Images != null)
                         {
-                            LowRes = x.Images.LowResolution.Url,
-                            LinkText = x.Caption?.Text
-                        })
-                        .ToList();
+                            var media = new InstagramMedia
+                            {
+                                DefaultImage = new ImageLink(
+                                    result.Images.StandardResolution.Url,
+                                    result.Images.StandardResolution.Width,
+                                    result.Images.StandardResolution.Height,
+                                    result.Link, "")
+                                {
+                                    LowRes = result.Images.LowResolution.Url,
+                                    LinkText = result.Caption?.Text
+                                }
+                            };
+
+                            if (result.CarouselMedia != null && result.CarouselMedia.Any())
+                            {
+                                // album
+                                media.Album = result.CarouselMedia.Where(x => x.Images != null)
+                                    .Select(x => new Image(
+                                        x.Images.StandardResolution.Url,
+                                        x.Images.StandardResolution.Width,
+                                        x.Images.StandardResolution.Height)
+                                    {
+                                        LowRes = x.Images.LowResolution.Url
+                                    })
+                                    .ToList();
+                            }
+
+                            items.Add(media);
+                        }
+                    }
 
                     // Remove Hashtags and ..... from instagram comments
                     foreach (var p in items)
                     {
-                        if (string.IsNullOrEmpty(p.LinkText))
+                        if (string.IsNullOrEmpty(p.DefaultImage.LinkText))
                             continue;
 
                         // Manage text
-                        p.LinkText = RemoveInstagramQuirksFromString(p.LinkText);
-                        p.LinkText = Utilities.ReduceMultipleSpaces(p.LinkText);
-                        p.LinkText = RemoveHashTagFromString(p.LinkText);
+                        p.DefaultImage.LinkText = RemoveInstagramQuirksFromString(p.DefaultImage.LinkText);
+                        p.DefaultImage.LinkText = Utilities.ReduceMultipleSpaces(p.DefaultImage.LinkText);
+                        p.DefaultImage.LinkText = RemoveHashTagFromString(p.DefaultImage.LinkText);
                     }
                 }
 

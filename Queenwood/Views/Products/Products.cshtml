@@ -6,62 +6,62 @@
     @if (Model.Etsy.ShopListings.Any())
     {
         <section>
-            <header>
-                <h1>For sale on <a href="@Model.Etsy.ShopUrl">Etsy</a></h1>
-            </header>
-            <div class="imgBoard">
-                @foreach (var li in Model.Etsy.ShopListings)
-                {
-                    var image = li.Images.First();
+                <header>
+                    <h1>For sale on <a href="@Model.Etsy.ShopUrl">Etsy</a></h1>
+                </header>
+                <div class="imgBoard">
+                    @foreach (var li in Model.Etsy.ShopListings)
+                    {
+                        var image = li.Images.First();
 
-                    <a class="imgBoard__img" href="@li.url">
-                        <img src="@Urls.GetHostedContentUrl(Context.Request, "/img/ph.png")" data-src="@image.url_fullxfull" class="lazy" />
+                        <a class="imgBoard__item" href="@li.url">
+                            <img src="@Urls.GetHostedContentUrl(Context.Request, "/img/ph.png")" data-src="@image.url_fullxfull" class="lazy imgBoard__img" />
 
-                        <div class="imgDetails">
-                            <p>@li.title</p>
+                            <div class="imgDetails">
+                                <p>@li.title</p>
 
-                            @if (li.price != null)
-                            {
-                                <p>£@li.price</p>
-                            }
-                            else
-                            {
-                                <p>Sold Out</p>
-                            }
-                        </div>
-                    </a>
-                }
-            </div>
-        </section>
+                                @if (li.price != null)
+                                {
+                                    <p>£@li.price</p>
+                                }
+                                else
+                                {
+                                    <p>Sold Out</p>
+                                }
+                            </div>
+                        </a>
+                    }
+                </div>
+            </section>
     }
 
     @* EBAY *@
     @if (Model.Ebay.ShopListings.Any())
     {
         <section>
-            <header>
-                <h1>For sale on <a href="@Model.Ebay.ShopUrl">Ebay</a></h1>
-            </header>
-            <div class="imgBoard">
-                @foreach (var li in Model.Ebay.ShopListings)
-                {
-                    var image = li.PictureDetails;
+                <header>
+                    <h1>For sale on <a href="@Model.Ebay.ShopUrl">Ebay</a></h1>
+                </header>
+                <div class="imgBoard">
+                    @foreach (var li in Model.Ebay.ShopListings)
+                    {
+                        var image = li.PictureDetails;
 
-                    <a class="imgBoard__img" href="@li.ListingDetails.ViewItemURL">
-                        <img src="@Urls.GetHostedContentUrl(Context.Request, "/img/ph.png")" data-src="@image.PictureURL.First()" class="lazy" />
+                        <a class="imgBoard__item" href="@li.ListingDetails.ViewItemURL">
+                            <img src="@Urls.GetHostedContentUrl(Context.Request, "/img/ph.png")" data-src="@image.PictureURL.First()" class="lazy imgBoard__img" />
 
-                        <div class="imgDetails">
-                            <p>@li.Title</p>
+                            <div class="imgDetails">
+                                <p>@li.Title</p>
 
-                            @if (li.SellingStatus.CurrentPrice != null)
-                            {
-                                <p>£@li.SellingStatus.CurrentPrice.Value.ToString("N")</p>
-                            }
-                        </div>
-                    </a>
-                }
-            </div>
-        </section>
+                                @if (li.SellingStatus.CurrentPrice != null)
+                                {
+                                    <p>£@li.SellingStatus.CurrentPrice.Value.ToString("N")</p>
+                                }
+                            </div>
+                        </a>
+                    }
+                </div>
+            </section>
     }
 
     @* No Stock *@
@@ -83,19 +83,57 @@
     <div class="imgBoard">
         @foreach (var il in Model.Instagram.PortfolioItems)
         {
-            <a class="imgBoard__img" href="@il.LinkUrl">
-                <img src="@Urls.GetHostedContentUrl(Context.Request, "/img/ph.png")" data-src="@il.Url" class="lazy" />
-                @if (!String.IsNullOrEmpty(il.LinkText))
+            var isAlbum = il.Album != null && il.Album.Any();
+            var isAlbumClass = isAlbum ? "imgBoard__item--album" : "";
+
+            <a class="imgBoard__item @isAlbumClass" href="@il.DefaultImage.LinkUrl">
+                <img src="@Urls.GetHostedContentUrl(Context.Request, "/img/ph.png")" data-src="@il.DefaultImage.Url" class="lazy imgBoard__img" />
+                @if (!String.IsNullOrEmpty(il.DefaultImage.LinkText))
                 {
                     <div class="imgDetails">
-                        <p>@il.LinkText</p>
+                        <p>@il.DefaultImage.LinkText</p>
+                    </div>
+                }
+
+                @if (isAlbum)
+                {
+                    <span class="imgBoard__albumIcon">
+                        <span class="hide">Album</span>
+                        <svg viewBox="0 0 24 24" class="svg">
+                            <title>Album</title>
+                            <use xlink:href="/img/icons/album.svg#album"></use>
+                        </svg>
+                    </span>
+                    <span class="imgBoard__nextIcon" tabindex="0">
+                        <span class="hide">Next</span>
+                        <svg viewBox="0 0 24 24" class="svg">
+                            <title>Next</title>
+                            <use xlink:href="/img/icons/chevron-right.svg#right"></use>
+                        </svg>
+                    </span>
+                    <span class="imgBoard__prevIcon" tabindex="0">
+                        <span class="hide">Previous</span>
+                        <svg viewBox="0 0 24 24" class="svg">
+                            <title>Previous</title>
+                            <use xlink:href="/img/icons/chevron-left.svg#left"></use>
+                        </svg>                        
+                    </span>
+
+                    <div class="album">
+                        @foreach (var image in il.Album)
+                        {
+                            <span class="album__item" data-src="@image.Url"></span>
+                        }
                     </div>
                 }
             </a>
         }
-    </div>
+        </div>
 </section>
 
+@section scripts {
+    <script src="~/js/products.min.js" asp-append-version="true" async></script>
+}
 @*<div class="row">
         <div class="row__inner">
             @foreach (var li in Model.ShopListings)

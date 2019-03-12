@@ -1,6 +1,7 @@
 ﻿using Queenwood.Core.Client.Ebay.Model;
 using Queenwood.Core.Client.Etsy.Model;
 using Queenwood.Models.Shared;
+using Queenwood.Models.VIewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,11 +53,11 @@ namespace Queenwood.Models.ViewModel
     public class Instagram
     {
         public string Url { get; set; }
-        public List<ImageLink> PortfolioItems { get; set; }
+        public List<InstagramMedia> PortfolioItems { get; set; }
 
         public Instagram()
         {
-            PortfolioItems = new List<ImageLink>();
+            PortfolioItems = new List<InstagramMedia>();
         }
     }
 }

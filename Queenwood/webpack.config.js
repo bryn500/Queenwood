@@ -12,6 +12,7 @@ module.exports = {
         // js
         'js/layout': './assets/js/layout.js',
         'js/loadfonts': './assets/js/loadfonts.js',
+        'js/products': './assets/js/products.js',
         // scss
         'css/all': './assets/scss/all.scss',
         'css/critical': './assets/scss/critical.scss'

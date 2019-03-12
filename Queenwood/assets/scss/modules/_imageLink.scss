@@ -5,8 +5,39 @@
 .imgBoard {
     text-align: center;
     margin-bottom: 2rem;
+    position: relative;
 
-    &__img {
+    &__albumIcon, &__prevIcon, &__nextIcon {
+        position: absolute;
+        z-index: 4;
+        width: 30px;
+        fill: #fff;
+
+        &:active, &:focus {
+            outline: none;
+        }
+    }
+
+    &__albumIcon {
+        top: 0.5rem;
+        right: 1rem;
+        width: 25px;
+        opacity: 0.8;
+    }
+
+    &__prevIcon {
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0.5rem;
+    }
+
+    &__nextIcon {
+        top: 50%;
+        transform: translateY(-50%);
+        right: 0.5rem;
+    }
+
+    &__item {
         display: block;
         position: relative;
         margin: 0 0 2rem 0;
@@ -16,7 +47,7 @@
         width: 100%;
         overflow: hidden;
 
-        img {
+        .imgBoard__img {
             height: auto;
             width: 100%;
             backface-visibility: hidden;
@@ -25,7 +56,7 @@
         }
 
         &:hover, &:focus {
-            img {
+            .imgBoard__img {
                 transform: scale(1.033);
             }
         }
@@ -37,7 +68,7 @@
             margin: 0 5px 5px 0;
             padding-bottom: 0px !important;
 
-            img {
+            .imgBoard__img {
                 height: 100%;
                 width: auto;
             }
@@ -47,6 +78,10 @@
             display: inline-block;
             height: 310px;
             width: auto;
+
+            /*.imgBoard__prevIcon, .imgBoard__nextIcon {
+                display: none;
+            }*/
         }
     }
 }
@@ -129,4 +164,9 @@
             transform: scale(1.033);
         }
     }
+}
+
+.album {
+    display: none;
+    // handled in js
 }

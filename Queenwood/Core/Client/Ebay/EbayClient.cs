@@ -70,14 +70,70 @@ namespace Queenwood.Core.Client.Ebay
             return await _cacheService.GetAsync("GetEbayUserListings", async () =>
             {
                 var client = _baseClient.GetHttpClient();
-
-                var task = await client.SendAsync(BuildGetUserListingsRequest(userID));
+                var request = BuildGetUserListingsRequest(userID);
+                var task = await client.SendAsync(request);
                 var responseContent = await task.Content.ReadAsStringAsync();
 
                 var results = DeserializeResult(responseContent);
 
                 return await ProcessResults(results);
             }, 1440).Unwrap();
+        }
+
+        private HttpRequestMessage BuildGetUserListingsRequest(string userID)
+        {
+            const string methodName = "GetSellerList";
+            const string version = "1085";
+            const int siteId = 3;
+            const int pageSize = 12;
+
+            var today = DateTime.Now;
+            var maxFuture = today.AddDays(120);
+            var maxPast = today.AddDays(-120);
+
+            XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
+
+            var xml = new XDocument(
+                new XDeclaration("1.0", "utf-8", null),
+                new XElement(ns + methodName + "Request",
+                    new XElement(ns + "UserID", userID),
+                    new XElement(ns + "GranularityLevel", "Coarse"),
+                    //new XElement(ns + "StartTimeFrom", maxPast.ToString("s", System.Globalization.CultureInfo.InvariantCulture)),
+                    //new XElement(ns + "StartTimeTo", today.ToString("s", System.Globalization.CultureInfo.InvariantCulture)),
+                    new XElement(ns + "EndTimeFrom", today.ToString("s", System.Globalization.CultureInfo.InvariantCulture)),
+                    new XElement(ns + "EndTimeTo", maxFuture.ToString("s", System.Globalization.CultureInfo.InvariantCulture)),
+                    new XElement(ns + "RequesterCredentials",
+                        new XElement(ns + "eBayAuthToken", _ebayConfig.AuthnAuthToken)),
+                    new XElement(ns + "Pagination",
+                        new XElement(ns + "EntriesPerPage", pageSize),
+                        new XElement(ns + "PageNumber", "1"))
+            ));
+
+            string payload;
+
+            using (var sw = new MemoryStream())
+            {
+                using (var strw = new StreamWriter(sw, Encoding.UTF8))
+                {
+                    xml.Save(strw);
+                    payload = Encoding.UTF8.GetString(sw.ToArray());
+                }
+            }
+
+            var httpContent = new StringContent(payload, Encoding.UTF8, "application/xml");
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri("https://api.ebay.com/ws/api.dll"),
+                Method = HttpMethod.Post,
+                Content = httpContent
+            };
+
+            request.Headers.Add("X-EBAY-API-COMPATIBILITY-LEVEL", version);
+            request.Headers.Add("X-EBAY-API-CALL-NAME", methodName);
+            request.Headers.Add("X-EBAY-API-SITEID", siteId.ToString());
+
+            return request;
         }
 
         private GetSellerListResponse DeserializeResult(string responseContent)
@@ -123,61 +179,6 @@ namespace Queenwood.Core.Client.Ebay
             result.ItemArray.Items.RemoveAll(x => x.Hide);
 
             return result.ItemArray.Items;
-        }
-
-        private HttpRequestMessage BuildGetUserListingsRequest(string userID)
-        {
-            const string methodName = "GetSellerList";
-            const string version = "1085";
-            const int siteId = 3;
-            const int pageSize = 12;
-
-            var today = DateTime.Now;
-            var maxFuture = today.AddDays(100);
-            var maxPast = today.AddDays(-100);
-
-            XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
-
-            var xml = new XDocument(
-                new XDeclaration("1.0", "utf-8", null),
-                new XElement(ns + methodName + "Request",
-                    new XElement(ns + "Version", version),
-                    new XElement(ns + "UserID", userID),
-                    new XElement(ns + "GranularityLevel", "Coarse"),
-                    new XElement(ns + "EndTimeFrom", today.ToString("s", System.Globalization.CultureInfo.InvariantCulture)),
-                    new XElement(ns + "EndTimeTo", maxFuture.ToString("s", System.Globalization.CultureInfo.InvariantCulture)),
-                    new XElement(ns + "RequesterCredentials",
-                        new XElement(ns + "eBayAuthToken", _ebayConfig.AuthnAuthToken)),
-                    new XElement(ns + "Pagination",
-                        new XElement(ns + "EntriesPerPage", pageSize),
-                        new XElement(ns + "PageNumber", "1"))
-            ));
-
-            string payload;
-
-            using (var sw = new MemoryStream())
-            {
-                using (var strw = new StreamWriter(sw, Encoding.UTF8))
-                {
-                    xml.Save(strw);
-                    payload = Encoding.UTF8.GetString(sw.ToArray());
-                }
-            }
-
-            var httpContent = new StringContent(payload, Encoding.UTF8, "application/xml");
-
-            var request = new HttpRequestMessage()
-            {
-                RequestUri = new Uri("https://api.ebay.com/ws/api.dll"),
-                Method = HttpMethod.Post,
-                Content = httpContent
-            };
-
-            request.Headers.Add("X-EBAY-API-COMPATIBILITY-LEVEL", version);
-            request.Headers.Add("X-EBAY-API-CALL-NAME", methodName);
-            request.Headers.Add("X-EBAY-API-SITEID", siteId.ToString());
-
-            return request;
-        }
+        }        
     }
 }
