@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  queenwood:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "80"
+    image: ${DOCKER_REGISTRY}queenwood
+    volumes:
+      - C:\Users\bryn5\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets/
+    build:
+      context: .
+      dockerfile: Queenwood/Dockerfile
