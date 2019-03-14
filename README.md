@@ -7,4 +7,4 @@
 ### Helpful docker commands
 * docker system prune --volumes
 * docker image ls
-* docker container stop ****
+* docker container stop ***

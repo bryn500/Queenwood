@@ -9,7 +9,6 @@ using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
-using Microsoft.Extensions.Logging;
 
 namespace Queenwood
 {
@@ -20,23 +19,23 @@ namespace Queenwood
             BuildWebHost(args).Run();
         }
 
-        private const string GetKeyVaultEndpoint = "https://queenwood-secrets.vault.azure.net";
-
         public static IWebHost BuildWebHost(string[] args) =>
                 WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((ctx, builder) =>
                 {
-                    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                    var isDevelopment = environment == EnvironmentName.Development;
-
-                    if (!string.IsNullOrEmpty(GetKeyVaultEndpoint) && !isDevelopment)
+                    if (ctx.HostingEnvironment.IsProduction())
                     {
+                        var appSettings = builder.Build();
+
                         var azureServiceTokenProvider = new AzureServiceTokenProvider();
                         var keyVaultClient = new KeyVaultClient(
                             new KeyVaultClient.AuthenticationCallback(
                                 azureServiceTokenProvider.KeyVaultTokenCallback));
+
                         builder.AddAzureKeyVault(
-                            GetKeyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+                            $"https://{appSettings["KeyVaultName"]}.vault.azure.net/",
+                            keyVaultClient,
+                            new DefaultKeyVaultSecretManager());
                     }
                 })
                 .ConfigureKestrel((context, options) =>

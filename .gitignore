@@ -4,10 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
-appsettings.Production.json
-appsettings.Development.json
 XMLFile.xml
-wwwroot*
+Queenwood/wwwroot/data
 
 *.suo
 *.user
@@ -333,5 +331,4 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-Queenwood/appsettings.Development.json
 Queenwood/appsettings.Development.json
